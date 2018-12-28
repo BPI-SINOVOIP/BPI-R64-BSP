@@ -1,0 +1,1 @@
+cmd_drivers/cpufreq/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/cpufreq/built-in.o drivers/cpufreq/cpufreq.o drivers/cpufreq/freq_table.o drivers/cpufreq/cpufreq_governor_attr_set.o drivers/cpufreq/cpufreq_stats.o drivers/cpufreq/cpufreq_performance.o drivers/cpufreq/cpufreq_powersave.o drivers/cpufreq/cpufreq_interactive.o drivers/cpufreq/cpufreq-dt.o 

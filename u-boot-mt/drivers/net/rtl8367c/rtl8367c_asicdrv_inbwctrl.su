@@ -1,0 +1,4 @@
+rtl8367c_asicdrv_inbwctrl.c:37:7:rtl8367c_setAsicPortIngressBandwidth	24	static
+rtl8367c_asicdrv_inbwctrl.c:92:7:rtl8367c_getAsicPortIngressBandwidth	32	static
+rtl8367c_asicdrv_inbwctrl.c:142:7:rtl8367c_setAsicPortIngressBandwidthBypass	0	static
+rtl8367c_asicdrv_inbwctrl.c:160:7:rtl8367c_getAsicPortIngressBandwidthBypass	0	static

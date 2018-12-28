@@ -1,0 +1,1 @@
+cmd_drivers/mmc/host/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/mmc/host/built-in.o drivers/mmc/host/mmci.o drivers/mmc/host/sdhci.o drivers/mmc/host/mtk-sd.o drivers/mmc/host/mmc_spi.o drivers/mmc/host/of_mmc_spi.o drivers/mmc/host/dw_mmc.o drivers/mmc/host/dw_mmc-pltfm.o drivers/mmc/host/dw_mmc-exynos.o drivers/mmc/host/sdhci-pltfm.o 

@@ -1,0 +1,2 @@
+kernel/drivers/iio/industrialio.ko
+kernel/drivers/iio/adc/mt6577_auxadc.ko

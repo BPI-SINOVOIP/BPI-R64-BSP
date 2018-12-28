@@ -1,0 +1,1 @@
+cmd_drivers/net/wireless/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/net/wireless/built-in.o drivers/net/wireless/realtek/built-in.o drivers/net/wireless/mediatek/built-in.o drivers/net/wireless/wifi_utility/built-in.o 

@@ -1,0 +1,2 @@
+kernel/net/bridge/netfilter/nf_tables_bridge.ko
+kernel/net/bridge/netfilter/ebtables.ko

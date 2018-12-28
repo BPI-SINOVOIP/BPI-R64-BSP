@@ -1,0 +1,9 @@
+kernel/drivers/misc/eeprom/at24.ko
+kernel/drivers/misc/eeprom/at25.ko
+kernel/drivers/misc/eeprom/eeprom_93xx46.ko
+kernel/drivers/misc/ti-st/st_drv.ko
+kernel/drivers/misc/lis3lv02d/lis3lv02d.ko
+kernel/drivers/misc/lis3lv02d/lis3lv02d_spi.ko
+kernel/drivers/misc/lis3lv02d/lis3lv02d_i2c.ko
+kernel/drivers/misc/ti_dac7512.ko
+kernel/drivers/misc/altera-stapl/altera-stapl.ko

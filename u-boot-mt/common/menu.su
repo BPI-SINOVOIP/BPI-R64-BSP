@@ -1,0 +1,7 @@
+menu.c:107:6:__menu_display_statusline	0	static
+menu.c:168:5:menu_default_choice	0	static
+menu.c:237:5:menu_default_set	24	static
+menu.c:269:5:menu_get_choice	1056	static
+menu.c:298:5:menu_item_add	32	static
+menu.c:359:14:menu_create	24	static
+menu.c:400:5:menu_destroy	24	static

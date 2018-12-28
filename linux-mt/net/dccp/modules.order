@@ -1,0 +1,4 @@
+kernel/net/dccp/dccp.ko
+kernel/net/dccp/dccp_ipv4.ko
+kernel/net/dccp/dccp_ipv6.ko
+kernel/net/dccp/dccp_diag.ko

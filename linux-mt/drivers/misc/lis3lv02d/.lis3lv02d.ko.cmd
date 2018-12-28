@@ -1,0 +1,1 @@
+cmd_drivers/misc/lis3lv02d/lis3lv02d.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o drivers/misc/lis3lv02d/lis3lv02d.ko drivers/misc/lis3lv02d/lis3lv02d.o drivers/misc/lis3lv02d/lis3lv02d.mod.o

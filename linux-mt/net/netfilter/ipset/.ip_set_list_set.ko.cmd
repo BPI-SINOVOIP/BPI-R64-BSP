@@ -1,0 +1,1 @@
+cmd_net/netfilter/ipset/ip_set_list_set.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/netfilter/ipset/ip_set_list_set.ko net/netfilter/ipset/ip_set_list_set.o net/netfilter/ipset/ip_set_list_set.mod.o

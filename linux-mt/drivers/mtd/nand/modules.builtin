@@ -1,0 +1,8 @@
+kernel/drivers/mtd/nand/nand.ko
+kernel/drivers/mtd/nand/nand_ecc.ko
+kernel/drivers/mtd/nand/nand_ids.ko
+kernel/drivers/mtd/nand/mtk_nand.ko
+kernel/drivers/mtd/nand/mtk_ecc.ko
+kernel/drivers/mtd/nand/mtk_partition.ko
+kernel/drivers/mtd/nand/mtk_snand.ko
+kernel/drivers/mtd/nand/bmt.ko

@@ -1,0 +1,1 @@
+cmd_drivers/block/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/block/built-in.o drivers/block/brd.o drivers/block/loop.o drivers/block/nbd.o drivers/block/cryptoloop.o drivers/block/virtio_blk.o 

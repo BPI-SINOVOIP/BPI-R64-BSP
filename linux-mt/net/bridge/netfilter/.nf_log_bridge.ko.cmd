@@ -1,0 +1,1 @@
+cmd_net/bridge/netfilter/nf_log_bridge.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/bridge/netfilter/nf_log_bridge.ko net/bridge/netfilter/nf_log_bridge.o net/bridge/netfilter/nf_log_bridge.mod.o

@@ -1,0 +1,14 @@
+kernel/net/netfilter/ipvs/ip_vs_rr.ko
+kernel/net/netfilter/ipvs/ip_vs_wrr.ko
+kernel/net/netfilter/ipvs/ip_vs_lc.ko
+kernel/net/netfilter/ipvs/ip_vs_wlc.ko
+kernel/net/netfilter/ipvs/ip_vs_fo.ko
+kernel/net/netfilter/ipvs/ip_vs_ovf.ko
+kernel/net/netfilter/ipvs/ip_vs_lblc.ko
+kernel/net/netfilter/ipvs/ip_vs_lblcr.ko
+kernel/net/netfilter/ipvs/ip_vs_dh.ko
+kernel/net/netfilter/ipvs/ip_vs_sh.ko
+kernel/net/netfilter/ipvs/ip_vs_sed.ko
+kernel/net/netfilter/ipvs/ip_vs_nq.ko
+kernel/net/netfilter/ipvs/ip_vs_ftp.ko
+kernel/net/netfilter/ipvs/ip_vs_pe_sip.ko

@@ -1,0 +1,2 @@
+kernel/net/rxrpc/af-rxrpc.ko
+kernel/net/rxrpc/rxkad.ko

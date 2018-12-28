@@ -1,0 +1,1 @@
+cmd_drivers/usb/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/usb/built-in.o drivers/usb/core/built-in.o drivers/usb/phy/built-in.o drivers/usb/isp1760/built-in.o drivers/usb/host/built-in.o drivers/usb/class/built-in.o drivers/usb/storage/built-in.o drivers/usb/serial/built-in.o drivers/usb/misc/built-in.o drivers/usb/common/built-in.o 

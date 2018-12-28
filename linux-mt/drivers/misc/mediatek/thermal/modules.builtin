@@ -1,0 +1,8 @@
+kernel/drivers/misc/mediatek/thermal/mtk_thermal_monitor.ko
+kernel/drivers/misc/mediatek/thermal/mtk_cooler_shutdown.ko
+kernel/drivers/misc/mediatek/thermal/mtk_cooler_kshutdown.ko
+kernel/drivers/misc/mediatek/thermal/mtk_cooler_vrt.ko
+kernel/drivers/misc/mediatek/thermal/mt7622/mtk_thermal_platform.ko
+kernel/drivers/misc/mediatek/thermal/mt7622/mtk_thermal_timer.ko
+kernel/drivers/misc/mediatek/thermal/mt7622/mtk_ts_bts.ko
+kernel/drivers/misc/mediatek/thermal/mt7622/mtk_ts_cpu.ko

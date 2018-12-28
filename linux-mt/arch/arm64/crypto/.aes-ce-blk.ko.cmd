@@ -1,0 +1,1 @@
+cmd_arch/arm64/crypto/aes-ce-blk.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o arch/arm64/crypto/aes-ce-blk.ko arch/arm64/crypto/aes-ce-blk.o arch/arm64/crypto/aes-ce-blk.mod.o

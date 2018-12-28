@@ -1,0 +1,1 @@
+cmd_net/openvswitch/vport-vxlan.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/openvswitch/vport-vxlan.ko net/openvswitch/vport-vxlan.o net/openvswitch/vport-vxlan.mod.o

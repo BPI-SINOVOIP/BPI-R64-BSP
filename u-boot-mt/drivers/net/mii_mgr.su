@@ -1,0 +1,6 @@
+mii_mgr.c:20:5:__mii_mgr_read	40	static
+mii_mgr.c:68:5:__mii_mgr_write	32	static
+mii_mgr.c:111:5:mii_mgr_read	24	static
+mii_mgr.c:139:5:mii_mgr_write	16	static
+mii_mgr.c:201:5:rt2880_mdio_access	40	static
+mii_mgr.c:162:6:dump_phy_reg	32	static

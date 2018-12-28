@@ -1,0 +1,8 @@
+kernel/drivers/net/irda/irda-usb.ko
+kernel/drivers/net/irda/stir4200.ko
+kernel/drivers/net/irda/mcs7780.ko
+kernel/drivers/net/irda/irtty-sir.ko
+kernel/drivers/net/irda/sir-dev.ko
+kernel/drivers/net/irda/kingsun-sir.ko
+kernel/drivers/net/irda/ksdazzle-sir.ko
+kernel/drivers/net/irda/ks959-sir.ko

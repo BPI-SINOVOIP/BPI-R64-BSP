@@ -1,0 +1,1 @@
+cmd_net/netfilter/ipset/ip_set_bitmap_port.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/netfilter/ipset/ip_set_bitmap_port.ko net/netfilter/ipset/ip_set_bitmap_port.o net/netfilter/ipset/ip_set_bitmap_port.mod.o

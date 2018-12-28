@@ -1,0 +1,3 @@
+kernel/drivers/usb/misc/cytherm.ko
+kernel/drivers/usb/misc/usblcd.ko
+kernel/drivers/usb/misc/legousbtower.ko

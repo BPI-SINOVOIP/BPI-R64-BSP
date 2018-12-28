@@ -1,0 +1,11 @@
+uart.c:114:6:uart_setbrg	32	static
+uart.c:210:5:mtk_uart_init	8	static
+uart.c:318:6:PutUARTByte	0	static
+uart.c:330:5:uart_getc	0	static
+uart.c:336:6:uart_puts	8	static
+uart.c:342:5:uart_tstc	0	static
+uart.c:97:6:mtk_uart_power_on	0	static
+uart.c:200:5:serial_nonblock_getc	0	static
+uart.c:205:6:mtk_serial_set_current_uart	0	static
+uart.c:358:6:pl01x_serial_initialize	0	static
+uart.c:363:23:default_serial_console	0	static

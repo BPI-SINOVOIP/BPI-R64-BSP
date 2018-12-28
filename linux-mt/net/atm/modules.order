@@ -1,0 +1,5 @@
+kernel/net/atm/atm.ko
+kernel/net/atm/clip.ko
+kernel/net/atm/br2684.ko
+kernel/net/atm/lec.ko
+kernel/net/atm/mpoa.ko

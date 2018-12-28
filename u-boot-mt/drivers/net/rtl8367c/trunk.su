@@ -1,0 +1,13 @@
+trunk.c:45:15:rtk_trunk_port_set	24	static
+trunk.c:137:15:rtk_trunk_port_get	24	static
+trunk.c:189:15:rtk_trunk_distributionAlgorithm_set	16	static
+trunk.c:224:15:rtk_trunk_distributionAlgorithm_get	16	static
+trunk.c:262:15:rtk_trunk_trafficSeparate_set	16	static
+trunk.c:301:15:rtk_trunk_trafficSeparate_get	24	static
+trunk.c:339:15:rtk_trunk_mode_set	8	static
+trunk.c:372:15:rtk_trunk_mode_get	8	static
+trunk.c:404:15:rtk_trunk_trafficPause_set	16	static
+trunk.c:439:15:rtk_trunk_trafficPause_get	16	static
+trunk.c:480:15:rtk_trunk_hashMappingTable_set	16	static
+trunk.c:532:15:rtk_trunk_hashMappingTable_get	24	static
+trunk.c:586:15:rtk_trunk_portQueueEmpty_get	16	static

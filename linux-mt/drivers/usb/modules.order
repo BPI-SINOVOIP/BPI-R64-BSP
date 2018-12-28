@@ -1,0 +1,5 @@
+kernel/drivers/usb/class/cdc-acm.ko
+kernel/drivers/usb/class/usblp.ko
+kernel/drivers/usb/misc/cytherm.ko
+kernel/drivers/usb/misc/usblcd.ko
+kernel/drivers/usb/misc/legousbtower.ko

@@ -1,0 +1,12 @@
+export ARCH=arm
+export BOARD=BPI-R64-console
+export SOC=mt7622
+export MACH=mt7622_evb
+export CROSS_COMPILE=arm-linux-gnueabihf-
+export UBOOT_CONFIG=mt7622_evb_config
+export KERNEL_CONFIG=mt7622_evb_bpi_defconfig
+export LICHEE_PLATFORM="linux"
+export GPU_TYPE="mali450"
+export TOPDIR=/home/bpi/Code/Linux/BPI-R64-bsp
+export TARGET_PLATFORM=mediatek
+export TARGET_PRODUCT=bpi-r64

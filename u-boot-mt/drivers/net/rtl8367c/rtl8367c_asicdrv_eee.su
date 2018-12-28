@@ -1,0 +1,4 @@
+rtl8367c_asicdrv_eee.c:32:7:rtl8367c_setAsicEee100M	24	static
+rtl8367c_asicdrv_eee.c:67:7:rtl8367c_getAsicEee100M	16	static
+rtl8367c_asicdrv_eee.c:93:7:rtl8367c_setAsicEeeGiga	24	static
+rtl8367c_asicdrv_eee.c:128:7:rtl8367c_getAsicEeeGiga	16	static

@@ -1,0 +1,4 @@
+kernel/drivers/input/input-core.ko
+kernel/drivers/input/ff-memless.ko
+kernel/drivers/input/input-polldev.ko
+kernel/drivers/input/matrix-keymap.ko

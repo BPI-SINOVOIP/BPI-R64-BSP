@@ -1,0 +1,12 @@
+mt7622-rfb1.o: arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts \
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi \
+ arch/arm64/boot/dts/include/dt-bindings/clock/mt7622-clk.h \
+ arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/irq.h \
+ arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/arm-gic.h \
+ arch/arm64/boot/dts/include/dt-bindings/power/mt7622-power.h \
+ arch/arm64/boot/dts/include/dt-bindings/reset-controller/mt7622-resets.h \
+ arch/arm64/boot/dts/include/dt-bindings/phy/phy.h \
+ arch/arm64/boot/dts/mediatek/mt7622-pinfunc.h \
+ arch/arm64/boot/dts/include/dt-bindings/pinctrl/mt65xx.h \
+ arch/arm64/boot/dts/mediatek/mt7622-clkao.dtsi \
+ arch/arm64/boot/dts/mediatek/mt6380.dtsi

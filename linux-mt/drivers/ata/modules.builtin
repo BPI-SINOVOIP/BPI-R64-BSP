@@ -1,0 +1,15 @@
+kernel/drivers/ata/libata.ko
+kernel/drivers/ata/ahci.ko
+kernel/drivers/ata/libahci.ko
+kernel/drivers/ata/ahci_platform.ko
+kernel/drivers/ata/libahci.ko
+kernel/drivers/ata/libahci_platform.ko
+kernel/drivers/ata/ahci_ceva.ko
+kernel/drivers/ata/libahci.ko
+kernel/drivers/ata/libahci_platform.ko
+kernel/drivers/ata/ahci_mtk.ko
+kernel/drivers/ata/libahci.ko
+kernel/drivers/ata/libahci_platform.ko
+kernel/drivers/ata/ahci_xgene.ko
+kernel/drivers/ata/libahci.ko
+kernel/drivers/ata/libahci_platform.ko

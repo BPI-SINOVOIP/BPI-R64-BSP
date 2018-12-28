@@ -1,0 +1,1 @@
+cmd_net/netfilter/ipvs/ip_vs_ovf.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/netfilter/ipvs/ip_vs_ovf.ko net/netfilter/ipvs/ip_vs_ovf.o net/netfilter/ipvs/ip_vs_ovf.mod.o

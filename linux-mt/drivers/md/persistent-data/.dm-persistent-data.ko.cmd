@@ -1,0 +1,1 @@
+cmd_drivers/md/persistent-data/dm-persistent-data.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o drivers/md/persistent-data/dm-persistent-data.ko drivers/md/persistent-data/dm-persistent-data.o drivers/md/persistent-data/dm-persistent-data.mod.o

@@ -1,0 +1,1 @@
+cmd_net/ipv4/netfilter/arp_tables.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/arp_tables.ko net/ipv4/netfilter/arp_tables.o net/ipv4/netfilter/arp_tables.mod.o

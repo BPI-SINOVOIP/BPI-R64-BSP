@@ -1,0 +1,198 @@
+# 1 "arch/arm64/boot/dts/mediatek/mt6795-evb.dts"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "arch/arm64/boot/dts/mediatek/mt6795-evb.dts"
+# 15 "arch/arm64/boot/dts/mediatek/mt6795-evb.dts"
+/dts-v1/;
+# 1 "arch/arm64/boot/dts/mediatek/mt6795.dtsi" 1
+# 14 "arch/arm64/boot/dts/mediatek/mt6795.dtsi"
+# 1 "./arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/irq.h" 1
+# 15 "arch/arm64/boot/dts/mediatek/mt6795.dtsi" 2
+# 1 "./arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/arm-gic.h" 1
+# 16 "arch/arm64/boot/dts/mediatek/mt6795.dtsi" 2
+
+/ {
+ compatible = "mediatek,mt6795";
+ interrupt-parent = <&sysirq>;
+ #address-cells = <2>;
+ #size-cells = <2>;
+
+ psci {
+  compatible = "arm,psci-0.2";
+  method = "smc";
+ };
+
+ cpus {
+  #address-cells = <1>;
+  #size-cells = <0>;
+
+  cpu0: cpu@0 {
+   device_type = "cpu";
+   compatible = "arm,cortex-a53";
+   enable-method = "psci";
+   reg = <0x000>;
+  };
+
+  cpu1: cpu@1 {
+   device_type = "cpu";
+   compatible = "arm,cortex-a53";
+   enable-method = "psci";
+   reg = <0x001>;
+  };
+
+  cpu2: cpu@2 {
+   device_type = "cpu";
+   compatible = "arm,cortex-a53";
+   enable-method = "psci";
+   reg = <0x002>;
+  };
+
+  cpu3: cpu@3 {
+   device_type = "cpu";
+   compatible = "arm,cortex-a53";
+   enable-method = "psci";
+   reg = <0x003>;
+  };
+
+  cpu4: cpu@100 {
+   device_type = "cpu";
+   compatible = "arm,cortex-a53";
+   enable-method = "psci";
+   reg = <0x100>;
+  };
+
+  cpu5: cpu@101 {
+   device_type = "cpu";
+   compatible = "arm,cortex-a53";
+   enable-method = "psci";
+   reg = <0x101>;
+  };
+
+  cpu6: cpu@102 {
+   device_type = "cpu";
+   compatible = "arm,cortex-a53";
+   enable-method = "psci";
+   reg = <0x102>;
+  };
+
+  cpu7: cpu@103 {
+   device_type = "cpu";
+   compatible = "arm,cortex-a53";
+   enable-method = "psci";
+   reg = <0x103>;
+  };
+ };
+
+ system_clk: dummy13m {
+  compatible = "fixed-clock";
+  clock-frequency = <13000000>;
+  #clock-cells = <0>;
+ };
+
+ rtc_clk: dummy32k {
+  compatible = "fixed-clock";
+  clock-frequency = <32000>;
+  #clock-cells = <0>;
+ };
+
+ uart_clk: dummy26m {
+  compatible = "fixed-clock";
+  clock-frequency = <26000000>;
+  #clock-cells = <0>;
+ };
+
+ timer {
+  compatible = "arm,armv8-timer";
+  interrupt-parent = <&gic>;
+  interrupts = <1 13
+        ((((1 << (8)) - 1) << 8) | 8)>,
+        <1 14
+        ((((1 << (8)) - 1) << 8) | 8)>,
+        <1 11
+        ((((1 << (8)) - 1) << 8) | 8)>,
+        <1 10
+        ((((1 << (8)) - 1) << 8) | 8)>;
+ };
+
+ sysirq: intpol-controller@10200620 {
+  compatible = "mediatek,mt6795-sysirq",
+        "mediatek,mt6577-sysirq";
+  interrupt-controller;
+  #interrupt-cells = <3>;
+  interrupt-parent = <&gic>;
+  reg = <0 0x10200620 0 0x20>;
+ };
+
+ gic: interrupt-controller@10221000 {
+  compatible = "arm,gic-400";
+  #interrupt-cells = <3>;
+  interrupt-parent = <&gic>;
+  interrupt-controller;
+  reg = <0 0x10221000 0 0x1000>,
+        <0 0x10222000 0 0x2000>,
+        <0 0x10224000 0 0x2000>,
+        <0 0x10226000 0 0x2000>;
+ };
+
+ uart0: serial@11002000 {
+  compatible = "mediatek,mt6795-uart",
+        "mediatek,mt6577-uart";
+  reg = <0 0x11002000 0 0x400>;
+  interrupts = <0 91 8>;
+  clocks = <&uart_clk>;
+  status = "disabled";
+ };
+
+ uart1: serial@11003000 {
+  compatible = "mediatek,mt6795-uart",
+        "mediatek,mt6577-uart";
+  reg = <0 0x11003000 0 0x400>;
+  interrupts = <0 92 8>;
+  clocks = <&uart_clk>;
+  status = "disabled";
+ };
+
+ uart2: serial@11004000 {
+  compatible = "mediatek,mt6795-uart",
+        "mediatek,mt6577-uart";
+  reg = <0 0x11004000 0 0x400>;
+  interrupts = <0 93 8>;
+  clocks = <&uart_clk>;
+  status = "disabled";
+ };
+
+ uart3: serial@11005000 {
+  compatible = "mediatek,mt6795-uart",
+        "mediatek,mt6577-uart";
+  reg = <0 0x11005000 0 0x400>;
+  interrupts = <0 94 8>;
+  clocks = <&uart_clk>;
+  status = "disabled";
+ };
+};
+# 17 "arch/arm64/boot/dts/mediatek/mt6795-evb.dts" 2
+
+/ {
+ model = "MediaTek MT6795 Evaluation Board";
+ compatible = "mediatek,mt6795-evb", "mediatek,mt6795";
+
+ aliases {
+  serial0 = &uart0;
+  serial1 = &uart1;
+  serial2 = &uart2;
+  serial3 = &uart3;
+ };
+
+ memory@40000000 {
+  device_type = "memory";
+  reg = <0 0x40000000 0 0x1e800000>;
+ };
+
+ chosen {
+  stdout-path = "serial0:921600n8";
+ };
+};
+
+&uart0 {
+ status = "okay";
+};

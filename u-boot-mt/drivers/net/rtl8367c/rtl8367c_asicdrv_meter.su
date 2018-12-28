@@ -1,0 +1,8 @@
+rtl8367c_asicdrv_meter.c:35:7:rtl8367c_setAsicShareMeter	24	static
+rtl8367c_asicdrv_meter.c:92:7:rtl8367c_getAsicShareMeter	32	static
+rtl8367c_asicdrv_meter.c:152:7:rtl8367c_setAsicShareMeterBucketSize	0	static
+rtl8367c_asicdrv_meter.c:179:7:rtl8367c_getAsicShareMeterBucketSize	0	static
+rtl8367c_asicdrv_meter.c:206:7:rtl8367c_setAsicShareMeterType	0	static
+rtl8367c_asicdrv_meter.c:235:7:rtl8367c_getAsicShareMeterType	0	static
+rtl8367c_asicdrv_meter.c:268:7:rtl8367c_setAsicMeterExceedStatus	0	static
+rtl8367c_asicdrv_meter.c:295:7:rtl8367c_getAsicMeterExceedStatus	0	static

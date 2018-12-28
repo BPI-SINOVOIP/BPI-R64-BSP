@@ -1,0 +1,15 @@
+timer.c:142:5:gpt4_get_current_tick	0	static
+timer.c:147:6:gpt4_timeout_tick	0	static
+timer.c:178:5:gpt4_tick2time_us	0	static
+timer.c:183:5:gpt4_time2tick_us	0	static
+timer.c:218:6:gpt_busy_wait_us	8	static
+timer.c:230:6:gpt_busy_wait_ms	16	static
+timer.c:245:6:reset_timer_masked	0	static
+timer.c:251:7:get_timer_masked	8	static
+timer.c:270:6:reset_timer	0	static
+timer.c:277:7:get_timer	8	static
+timer.c:295:6:set_timer	0	static
+timer.c:326:6:__udelay	0	static
+timer.c:335:20:get_ticks	8	static
+timer.c:344:7:get_tbclk	0	static
+timer.c:351:6:mtk_timer_init	0	static

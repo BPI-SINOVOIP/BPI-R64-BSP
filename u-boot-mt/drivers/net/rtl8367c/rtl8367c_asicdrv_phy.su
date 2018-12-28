@@ -1,0 +1,6 @@
+rtl8367c_asicdrv_phy.c:39:7:rtl8367c_setAsicPHYOCPReg	16	static
+rtl8367c_asicdrv_phy.c:79:7:rtl8367c_getAsicPHYOCPReg	16	static
+rtl8367c_asicdrv_phy.c:274:7:rtl8367c_setAsicPHYReg	0	static
+rtl8367c_asicdrv_phy.c:304:7:rtl8367c_getAsicPHYReg	0	static
+rtl8367c_asicdrv_phy.c:334:7:rtl8367c_setAsicSdsReg	16	static
+rtl8367c_asicdrv_phy.c:367:7:rtl8367c_getAsicSdsReg	24	static

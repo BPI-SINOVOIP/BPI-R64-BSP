@@ -1,0 +1,16 @@
+rtl8367c_asicdrv_scheduling.c:36:7:rtl8367c_setAsicLeakyBucketParameter	8	static
+rtl8367c_asicdrv_scheduling.c:70:7:rtl8367c_getAsicLeakyBucketParameter	8	static
+rtl8367c_asicdrv_scheduling.c:102:7:rtl8367c_setAsicAprMeter	24	static
+rtl8367c_asicdrv_scheduling.c:143:7:rtl8367c_getAsicAprMeter	8	static
+rtl8367c_asicdrv_scheduling.c:179:7:rtl8367c_setAsicAprEnable	0	static
+rtl8367c_asicdrv_scheduling.c:206:7:rtl8367c_getAsicAprEnable	0	static
+rtl8367c_asicdrv_scheduling.c:236:7:rtl8367c_setAsicWFQWeight	0	static
+rtl8367c_asicdrv_scheduling.c:272:7:rtl8367c_getAsicWFQWeight	0	static
+rtl8367c_asicdrv_scheduling.c:303:7:rtl8367c_setAsicWFQBurstSize	0	static
+rtl8367c_asicdrv_scheduling.c:325:7:rtl8367c_getAsicWFQBurstSize	0	static
+rtl8367c_asicdrv_scheduling.c:351:7:rtl8367c_setAsicQueueType	0	static
+rtl8367c_asicdrv_scheduling.c:385:7:rtl8367c_getAsicQueueType	0	static
+rtl8367c_asicdrv_scheduling.c:417:7:rtl8367c_setAsicPortEgressRate	16	static
+rtl8367c_asicdrv_scheduling.c:459:7:rtl8367c_getAsicPortEgressRate	24	static
+rtl8367c_asicdrv_scheduling.c:496:7:rtl8367c_setAsicPortEgressRateIfg	0	static
+rtl8367c_asicdrv_scheduling.c:518:7:rtl8367c_getAsicPortEgressRateIfg	0	static

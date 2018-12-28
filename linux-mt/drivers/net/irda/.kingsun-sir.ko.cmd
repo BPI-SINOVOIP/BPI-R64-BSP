@@ -1,0 +1,1 @@
+cmd_drivers/net/irda/kingsun-sir.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o drivers/net/irda/kingsun-sir.ko drivers/net/irda/kingsun-sir.o drivers/net/irda/kingsun-sir.mod.o

@@ -1,0 +1,1 @@
+cmd_drivers/input/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/input/built-in.o drivers/input/input-core.o drivers/input/ff-memless.o drivers/input/input-polldev.o drivers/input/matrix-keymap.o drivers/input/keyreset.o drivers/input/keycombo.o 

@@ -1,0 +1,1 @@
+cmd_arch/arm64/crypto/crc32-arm64.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o arch/arm64/crypto/crc32-arm64.ko arch/arm64/crypto/crc32-arm64.o arch/arm64/crypto/crc32-arm64.mod.o

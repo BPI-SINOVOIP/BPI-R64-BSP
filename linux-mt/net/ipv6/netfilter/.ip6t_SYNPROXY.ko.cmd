@@ -1,0 +1,1 @@
+cmd_net/ipv6/netfilter/ip6t_SYNPROXY.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/ipv6/netfilter/ip6t_SYNPROXY.ko net/ipv6/netfilter/ip6t_SYNPROXY.o net/ipv6/netfilter/ip6t_SYNPROXY.mod.o

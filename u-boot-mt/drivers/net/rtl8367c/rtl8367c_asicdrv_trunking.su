@@ -1,0 +1,15 @@
+rtl8367c_asicdrv_trunking.c:33:7:rtl8367c_setAsicTrunkingMode	0	static
+rtl8367c_asicdrv_trunking.c:51:7:rtl8367c_getAsicTrunkingMode	0	static
+rtl8367c_asicdrv_trunking.c:70:7:rtl8367c_setAsicTrunkingFc	16	static
+rtl8367c_asicdrv_trunking.c:97:7:rtl8367c_getAsicTrunkingFc	0	static
+rtl8367c_asicdrv_trunking.c:119:7:rtl8367c_setAsicTrunkingGroup	0	static
+rtl8367c_asicdrv_trunking.c:139:7:rtl8367c_getAsicTrunkingGroup	0	static
+rtl8367c_asicdrv_trunking.c:160:7:rtl8367c_setAsicTrunkingFlood	0	static
+rtl8367c_asicdrv_trunking.c:178:7:rtl8367c_getAsicTrunkingFlood	0	static
+rtl8367c_asicdrv_trunking.c:203:7:rtl8367c_setAsicTrunkingHashSelect	0	static
+rtl8367c_asicdrv_trunking.c:221:7:rtl8367c_getAsicTrunkingHashSelect	0	static
+rtl8367c_asicdrv_trunking.c:239:7:rtl8367c_getAsicQeueuEmptyStatus	0	static
+rtl8367c_asicdrv_trunking.c:260:7:rtl8367c_setAsicTrunkingHashTable	0	static
+rtl8367c_asicdrv_trunking.c:289:7:rtl8367c_getAsicTrunkingHashTable	0	static
+rtl8367c_asicdrv_trunking.c:317:7:rtl8367c_setAsicTrunkingHashTable1	0	static
+rtl8367c_asicdrv_trunking.c:346:7:rtl8367c_getAsicTrunkingHashTable1	0	static

@@ -1,0 +1,2 @@
+kernel/drivers/block/drbd/drbd.ko
+kernel/drivers/block/rbd.ko

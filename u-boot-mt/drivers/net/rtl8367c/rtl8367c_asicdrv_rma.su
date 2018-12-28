@@ -1,0 +1,8 @@
+rtl8367c_asicdrv_rma.c:35:7:rtl8367c_setAsicRma	32	static
+rtl8367c_asicdrv_rma.c:79:7:rtl8367c_getAsicRma	16	static
+rtl8367c_asicdrv_rma.c:130:7:rtl8367c_setAsicRmaCdp	32	static
+rtl8367c_asicdrv_rma.c:169:7:rtl8367c_getAsicRmaCdp	16	static
+rtl8367c_asicdrv_rma.c:209:7:rtl8367c_setAsicRmaCsstp	32	static
+rtl8367c_asicdrv_rma.c:248:7:rtl8367c_getAsicRmaCsstp	16	static
+rtl8367c_asicdrv_rma.c:288:7:rtl8367c_setAsicRmaLldp	32	static
+rtl8367c_asicdrv_rma.c:334:7:rtl8367c_getAsicRmaLldp	16	static

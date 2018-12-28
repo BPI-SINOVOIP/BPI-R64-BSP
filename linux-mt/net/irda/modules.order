@@ -1,0 +1,5 @@
+kernel/net/irda/irda.ko
+kernel/net/irda/irlan/irlan.ko
+kernel/net/irda/irnet/irnet.ko
+kernel/net/irda/ircomm/ircomm.ko
+kernel/net/irda/ircomm/ircomm-tty.ko

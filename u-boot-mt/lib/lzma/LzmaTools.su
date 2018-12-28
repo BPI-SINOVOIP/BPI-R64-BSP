@@ -1,0 +1,3 @@
+LzmaTools.c:38:13:SzFree	0	static
+LzmaTools.c:37:14:SzAlloc	0	static
+LzmaTools.c:40:5:lzmaBuffToBuffDecompress	72	static

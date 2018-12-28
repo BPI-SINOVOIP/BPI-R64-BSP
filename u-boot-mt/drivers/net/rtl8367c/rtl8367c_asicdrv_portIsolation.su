@@ -1,0 +1,4 @@
+rtl8367c_asicdrv_portIsolation.c:36:7:rtl8367c_setAsicPortIsolationPermittedPortmask	0	static
+rtl8367c_asicdrv_portIsolation.c:62:7:rtl8367c_getAsicPortIsolationPermittedPortmask	0	static
+rtl8367c_asicdrv_portIsolation.c:86:7:rtl8367c_setAsicPortIsolationEfid	0	static
+rtl8367c_asicdrv_portIsolation.c:112:7:rtl8367c_getAsicPortIsolationEfid	0	static

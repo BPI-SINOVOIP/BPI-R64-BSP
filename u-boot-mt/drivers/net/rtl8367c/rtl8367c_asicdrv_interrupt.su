@@ -1,0 +1,8 @@
+rtl8367c_asicdrv_interrupt.c:32:7:rtl8367c_setAsicInterruptPolarity	0	static
+rtl8367c_asicdrv_interrupt.c:50:7:rtl8367c_getAsicInterruptPolarity	0	static
+rtl8367c_asicdrv_interrupt.c:68:7:rtl8367c_setAsicInterruptMask	0	static
+rtl8367c_asicdrv_interrupt.c:86:7:rtl8367c_getAsicInterruptMask	0	static
+rtl8367c_asicdrv_interrupt.c:115:7:rtl8367c_setAsicInterruptStatus	0	static
+rtl8367c_asicdrv_interrupt.c:133:7:rtl8367c_getAsicInterruptStatus	0	static
+rtl8367c_asicdrv_interrupt.c:153:7:rtl8367c_setAsicInterruptRelatedStatus	56	static
+rtl8367c_asicdrv_interrupt.c:187:7:rtl8367c_getAsicInterruptRelatedStatus	56	static

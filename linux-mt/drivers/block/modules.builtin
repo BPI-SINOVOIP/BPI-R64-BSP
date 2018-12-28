@@ -1,0 +1,5 @@
+kernel/drivers/block/brd.ko
+kernel/drivers/block/loop.ko
+kernel/drivers/block/nbd.ko
+kernel/drivers/block/cryptoloop.ko
+kernel/drivers/block/virtio_blk.ko

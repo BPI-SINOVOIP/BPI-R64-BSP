@@ -1,0 +1,4 @@
+msdc_utils.c:42:14:msdc_uffs	0	static
+msdc_utils.c:71:14:msdc_ntohl	8	static
+msdc_utils.c:82:6:msdc_set_field	16	static
+msdc_utils.c:90:6:msdc_get_field	8	static

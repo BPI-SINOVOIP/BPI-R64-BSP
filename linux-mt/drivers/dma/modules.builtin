@@ -1,0 +1,2 @@
+kernel/drivers/dma/virt-dma.ko
+kernel/drivers/dma/8250_mtk_dma.ko

@@ -1,0 +1,16 @@
+auto2712m1v1-initramfs.o: \
+ arch/arm64/boot/dts/mediatek/auto2712m1v1-initramfs.dts \
+ arch/arm64/boot/dts/mediatek/auto2712m1v1-common.dtsi \
+ arch/arm64/boot/dts/include/dt-bindings/gpio/gpio.h \
+ arch/arm64/boot/dts/mediatek/mt2712.dtsi \
+ arch/arm64/boot/dts/include/dt-bindings/clock/mt2712-clk.h \
+ arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/irq.h \
+ arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/arm-gic.h \
+ arch/arm64/boot/dts/include/dt-bindings/memory/mt2712-larb-port.h \
+ arch/arm64/boot/dts/include/dt-bindings/phy/phy.h \
+ arch/arm64/boot/dts/include/dt-bindings/power/mt2712-power.h \
+ arch/arm64/boot/dts/include/dt-bindings/reset-controller/mt2712-resets.h \
+ arch/arm64/boot/dts/mediatek/mt2712-pinfunc.h \
+ arch/arm64/boot/dts/include/dt-bindings/pinctrl/mt65xx.h \
+ arch/arm64/boot/dts/mediatek/mt2712-clkitg.dtsi \
+ arch/arm64/boot/dts/mediatek/mt2712-clkao.dtsi

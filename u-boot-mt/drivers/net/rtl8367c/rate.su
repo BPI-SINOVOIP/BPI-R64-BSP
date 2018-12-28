@@ -1,0 +1,12 @@
+rate.c:55:15:rtk_rate_shareMeter_set	24	static
+rate.c:118:15:rtk_rate_shareMeter_get	32	static
+rate.c:170:15:rtk_rate_shareMeterBucket_set	16	static
+rate.c:205:15:rtk_rate_shareMeterBucket_get	16	static
+rate.c:246:15:rtk_rate_igrBandwidthCtrlRate_set	24	static
+rate.c:299:15:rtk_rate_igrBandwidthCtrlRate_get	32	static
+rate.c:345:15:rtk_rate_egrBandwidthCtrlRate_set	16	static
+rate.c:397:15:rtk_rate_egrBandwidthCtrlRate_get	24	static
+rate.c:445:15:rtk_rate_egrQueueBwCtrlEnable_get	16	static
+rate.c:487:15:rtk_rate_egrQueueBwCtrlEnable_set	24	static
+rate.c:530:15:rtk_rate_egrQueueBwCtrlRate_get	24	static
+rate.c:578:15:rtk_rate_egrQueueBwCtrlRate_set	16	static

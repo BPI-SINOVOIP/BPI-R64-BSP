@@ -1,0 +1,8 @@
+rtl8367c_asicdrv_oam.c:36:7:rtl8367c_setAsicOamParser	0	static
+rtl8367c_asicdrv_oam.c:62:7:rtl8367c_getAsicOamParser	0	static
+rtl8367c_asicdrv_oam.c:86:7:rtl8367c_setAsicOamMultiplexer	0	static
+rtl8367c_asicdrv_oam.c:112:7:rtl8367c_getAsicOamMultiplexer	0	static
+rtl8367c_asicdrv_oam.c:134:7:rtl8367c_setAsicOamCpuPri	0	static
+rtl8367c_asicdrv_oam.c:155:7:rtl8367c_getAsicOamCpuPri	0	static
+rtl8367c_asicdrv_oam.c:173:7:rtl8367c_setAsicOamEnable	0	static
+rtl8367c_asicdrv_oam.c:191:7:rtl8367c_getAsicOamEnable	0	static
