@@ -5,7 +5,7 @@
 
 #include <malloc.h>
 #include <net.h>
-#include <rt_mmap.h>
+#include "eth.h"
 #include <miiphy.h>
 #include <asm/errno.h>
 
@@ -16,11 +16,16 @@
 #include "rtl8367c/include/rtl8367c_asicdrv_port.h"
 #endif
 
+#if defined (CONFIG_MT7531)
+#include "mt7531.h"
+#endif
+
 #if defined (GE_MII_FORCE_100) || defined (GE_RVMII_FORCE_100)
 #define	MAC_TO_100SW_MODE
 #elif defined (GE_MII_AN) || defined (GE_RMII_AN)
 #define	MAC_TO_100PHY_MODE
-#elif defined (GE_RGMII_AN) || defined (GE_RGMII_INTERNAL_P0_AN) || defined (GE_RGMII_INTERNAL_P4_AN)
+#elif defined (GE_RGMII_AN) || defined (GE_RGMII_INTERNAL_P0_AN) || defined (GE_RGMII_INTERNAL_P4_AN) \
+|| defined(CONFIG_GE2_SGMII_AN) || defined(CONFIG_GE1_SGMII_AN)
 #define	MAC_TO_GIGAPHY_MODE
 #elif defined (GE_RGMII_FORCE_1000) || defined (GE_TRGMII_FORCE_2600)
 #define	MAC_TO_MT7530_MODE
@@ -322,6 +327,8 @@ void  rt2880_eth_halt(struct eth_device* dev);
 
 int   mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data);
 int   mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data);
+u32 mii_mgr_read_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 *read_data);
+u32 mii_mgr_write_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 write_data);
 
 static int   rt2880_eth_setup(struct eth_device* dev);
 static int   rt2880_eth_initd;
@@ -338,13 +345,21 @@ volatile uchar	RxPktBuf[PKTBUFSRX][1536];
 #define PIODIR3924_R  (RALINK_PIO_BASE + 0x4c)
 #define PIODATA3924_R (RALINK_PIO_BASE + 0x48)
 
+#if defined(MT7622_ASIC_BOARD)
+#define SGMII_AN_BASE 0x1b128000
+#define SGMII_GEN_BASE 0x1b12a000
+#elif defined(LEOPARD_ASIC_BOARD) || defined(LEOPARD_FPGA_BOARD)
+#define SGMII_AN_BASE	(0x1b128000)
+#define SGMII_GEN_BASE	(0x1b128100)
+#define SGMII_AN_BASE_1	(0x1b130000)
+#define SGMII_GEN_BASE_1 (0x1b130100)
+#endif
 
 void START_ETH(struct eth_device *dev ) {
 	s32 omr;
 	omr=RALINK_REG(PDMA_GLO_CFG);
 	udelay(100);
 	omr |= TX_WB_DDONE | RX_DMA_EN | TX_DMA_EN ;
-		
 	RALINK_REG(PDMA_GLO_CFG)=omr;
 
 	udelay(500);
@@ -472,7 +487,7 @@ phy_interface_t rt2880_phy_interface_get(void)
 {
 #if defined (GE_MII_FORCE_100) || defined (GE_MII_AN)
 	return PHY_INTERFACE_MODE_MII;
-#elif defined (CONFIG_GE1_SGMII_FORCE_2500)
+#elif defined (CONFIG_GE1_SGMII_FORCE_2500) || defined (CONFIG_GE2_SGMII_AN) || defined (CONFIG_GE1_SGMII_AN) || defined (CONFIG_GE2_SGMII_FORCE_2500)
 	return PHY_INTERFACE_MODE_SGMII;
 #elif defined (GE_RMII_AN)
 	return PHY_INTERFACE_MODE_RMII;
@@ -848,8 +863,8 @@ void wait_loop(void) {
 
 void trgmii_calibration_7623(void) {
 
-	unsigned int  tap_a[5]; // minumum delay for all correct
-	unsigned int  tap_b[5]; // maximum delay for all correct
+	unsigned int  tap_a[5] = {0, 0, 0, 0, 0}; // minumum delay for all correct
+	unsigned int  tap_b[5] = {0, 0, 0, 0, 0}; // maximum delay for all correct
 	unsigned int  final_tap[5];
 	unsigned int  rxc_step_size;
 	unsigned int  rxd_step_size;
@@ -858,17 +873,23 @@ void trgmii_calibration_7623(void) {
 	unsigned int  rd_wd;
 	int  i;
 	unsigned int err_cnt[5];
+	unsigned int init_toggle_data;
 	unsigned int err_flag[5];
 	unsigned int err_total_flag;
+	unsigned int training_word;
 	unsigned int rd_tap;
+	unsigned int is_mt7623_e1 = 0;
 
 	u32  TRGMII_7623_base;
 	u32  TRGMII_7623_RD_0;
-
-	TRGMII_7623_base = 0x1B110300;
+	u32  TRGMII_RCK_CTRL;
+	TRGMII_7623_base = ETHDMASYS_ETH_SW_BASE+0x0300;
 	TRGMII_7623_RD_0 = TRGMII_7623_base + 0x10;
+	TRGMII_RCK_CTRL = TRGMII_7623_base;
 	rxd_step_size =0x1;
 	rxc_step_size =0x4;
+	init_toggle_data = 0x00000055;
+	training_word    = 0x000000AC;
 
 	//printk("Calibration begin ........");
 	*(volatile u_long *)(TRGMII_7623_base +0x04) &= 0x3fffffff;   // RX clock gating in MT7623
@@ -922,9 +943,9 @@ void trgmii_calibration_7623(void) {
 			*(volatile u_long *)(TRGMII_7623_RD_0 + i*8) = tmp & 0x4fffffff;
 		}
 		wait_loop();
-		//printk("2nd Disable EDGE CHK in MT7623\n");
 		/* Adjust RXC delay */
-		*(volatile u_long *)(TRGMII_7623_base +0x00) |= 0x80000000;   // Assert RX  reset in MT7623
+		if(is_mt7623_e1)
+			*(volatile u_long *)(TRGMII_7623_base +0x00) |= 0x80000000;   // Assert RX  reset in MT7623
 		*(volatile u_long *)(TRGMII_7623_base +0x04) &= 0x3fffffff;   // RX clock gating in MT7623
 		read_data = *(volatile u_long *)(TRGMII_7623_base);
 		if (err_total_flag == 0) {
@@ -937,9 +958,20 @@ void trgmii_calibration_7623(void) {
 		  read_data &= 0xffffff80;
 		  read_data |=tmp;
 		  *(volatile u_long *)(TRGMII_7623_base)  =   read_data;
+ 		} else {
+		  tmp = (read_data & 0x0000007f) + 16;
+		  //printk(" RXC delay = %d\n", tmp);
+		  read_data >>= 8;
+		  read_data &= 0xffffff80;
+		  read_data |= tmp;
+		  read_data <<=8;
+		  read_data &= 0xffffff80;
+		  read_data |=tmp;
+		  *(volatile u_long *)(TRGMII_7623_base)  =   read_data;
 		}
 		  read_data &=0x000000ff;
-		  *(volatile u_long *)(TRGMII_7623_base )      &= 0x7fffffff;   // Release RX reset in MT7623
+		  if(is_mt7623_e1)
+		  	*(volatile u_long *)(TRGMII_7623_base )      &= 0x7fffffff;   // Release RX reset in MT7623
 		  *(volatile u_long *)(TRGMII_7623_base +0x04) |= 0xC0000000;   // Disable RX clock gating in MT7623
 		  for (i = 0 ; i<5 ; i++) {
 		  	*(volatile u_long *)(TRGMII_7623_RD_0 + i*8) =  (*(volatile u_long *)(TRGMII_7623_RD_0 + i*8)) | 0x80000000;  // Set bslip_en = ~bit_slip_en
@@ -949,8 +981,8 @@ void trgmii_calibration_7623(void) {
 	//printk("Read RD_WD MT7623\n");
 	/* Read RD_WD MT7623*/
 	for  (i = 0 ; i<5 ; i++) {
-		rd_tap=0;
-		while (err_flag[i] != 0) {
+		  rd_tap = 0;
+			while (err_flag[i] != 0 && rd_tap != 128) {
 			/* Enable EDGE CHK in MT7623*/
 			tmp = *(volatile u_long *)(TRGMII_7623_RD_0 + i*8);
 			tmp |= 0x40000000;
@@ -977,20 +1009,19 @@ void trgmii_calibration_7623(void) {
 			    *(volatile u_long *)(TRGMII_7623_RD_0 + i*8) = read_data;
 			    tap_a[i] = rd_tap;
 			} else {
-                            rd_tap    = (read_data & 0x0000007f) + 4;
+                            rd_tap    = (read_data & 0x0000007f) + 48;
 			    read_data = (read_data & 0xffffff80) | rd_tap;
 			    *(volatile u_long *)(TRGMII_7623_RD_0 + i*8) = read_data;
 			}	
 			//err_cnt[i] = (*(volatile u_long *)(TRGMII_7623_RD_0 + i*8) >> 8)  & 0x0000000f;     // Read MT7623 Errcnt
 
 		}
-		//printk("%dth bit  Tap_a = %d\n", i, tap_a[i]);
+		//printf("7623 %dth bit  Tap_a = %d\n", i, tap_a[i]);
 	}
 	//printk("Last While Loop\n");
 	for  (i = 0 ; i<5 ; i++) {
 		//printk(" Bit%d\n", i);
-		rd_tap =0;
-		while ((err_cnt[i] == 0) && (rd_tap !=128)) {
+		while ((err_flag[i] == 0) && (rd_tap !=128)) {
 			read_data = *(volatile u_long *)(TRGMII_7623_RD_0 + i*8);
 			rd_tap    = (read_data & 0x0000007f) + rxd_step_size;                     // Add RXD delay in MT7623
 			read_data = (read_data & 0xffffff80) | rd_tap;
@@ -1000,7 +1031,20 @@ void trgmii_calibration_7623(void) {
 			tmp |= 0x40000000;
 			*(volatile u_long *)(TRGMII_7623_RD_0 + i*8) = tmp & 0x4fffffff;
 			wait_loop();
+#if 0			
 			err_cnt[i] = ((*(volatile u_long *)(TRGMII_7623_RD_0 + i*8)) >> 8)  & 0x0000000f;     // Read MT7623 Errcnt
+#else
+			read_data = *(volatile u_long *)(TRGMII_7623_RD_0 + i*8);
+			err_cnt[i] = (read_data >> 8)  & 0x0000000f;     // Read MT7623 Errcnt
+			rd_wd = (read_data >> 16)  & 0x000000ff;
+			if (err_cnt[i] != 0 || rd_wd !=0x55){
+				err_flag [i] =  1;
+			}
+			else {
+				err_flag[i] =0;
+			}
+#endif
+			
 			/* Disable EDGE CHK in MT7623*/
 			tmp = *(volatile u_long *)(TRGMII_7623_RD_0 + i*8);
 			tmp |= 0x40000000;
@@ -1010,7 +1054,7 @@ void trgmii_calibration_7623(void) {
 
 		}
 		tap_b[i] =   rd_tap;// -rxd_step_size;                                        // Record the max delay TAP_B
-		//printk("tap_b[%d] is %d \n", i,tap_b[i]);
+		//printf("7623 tap_b[%d] is %d \n", i,tap_b[i]);
 		final_tap[i] = (tap_a[i]+tap_b[i])/2;                                              //  Calculate RXD delay = (TAP_A + TAP_B)/2
 		//printk("%dth bit Final Tap = %d\n", i, final_tap[i]);
 		read_data = (read_data & 0xffffff80) | final_tap[i];
@@ -1035,33 +1079,41 @@ void trgmii_calibration_7623(void) {
 }
 
 
-void trgmii_calibration_7530(void){
+void trgmii_calibration_7530(void){ 
 
-	unsigned int  tap_a[5];
-	unsigned int  tap_b[5];
+	unsigned int  tap_a[5] = {0, 0, 0, 0, 0};
+	unsigned int  tap_b[5] = {0, 0, 0, 0, 0};
 	unsigned int  final_tap[5];
 	unsigned int  rxc_step_size;
 	unsigned int  rxd_step_size;
 	unsigned int  read_data;
 	unsigned int  tmp;
-	int  i;
+	int  i,j;
 	unsigned int err_cnt[5];
 	unsigned int rd_wd;
+	unsigned int init_toggle_data;
 	unsigned int err_flag[5];
 	unsigned int err_total_flag;
+	unsigned int training_word;
 	unsigned int rd_tap;
 	unsigned int is_mt7623_e1 = 0;
 #define DEVINFO_BASE                    0x17000000
 
 	u32  TRGMII_7623_base;
 	u32  TRGMII_7530_RD_0;
+	u32  TRGMII_RCK_CTRL;
 	u32 TRGMII_7530_base;
+	u32 TRGMII_7530_TX_base;
 	TRGMII_7623_base = 0x1B110300;
 	TRGMII_7530_base = 0x7A00;
 	TRGMII_7530_RD_0 = TRGMII_7530_base + 0x10;
+	TRGMII_RCK_CTRL = TRGMII_7623_base;
 	rxd_step_size = 0x1;
 	rxc_step_size = 0x8;
+	init_toggle_data = 0x00000055;
+	training_word = 0x000000AC;
 
+	TRGMII_7530_TX_base = TRGMII_7530_base + 0x50;
 
 	tmp = *(volatile u_long *)(DEVINFO_BASE+0x8);
 	if(tmp == 0x0000CA00)
@@ -1236,19 +1288,21 @@ void trgmii_calibration_7530(void){
 		        wait_loop();
 
 		}
-		//printk("%dth bit  Tap_a = %d\n", i, tap_a[i]);
+		//printf("7530 %dth bit  Tap_a = %d\n", i, tap_a[i]);
 	}
 	//printk("Last While Loop\n");
 	for  (i = 0 ; i<5 ; i++) {
 	rd_tap =0;
-		while (err_cnt[i] == 0 && (rd_tap!=128)) {
+		while (err_flag[i] == 0 && (rd_tap!=128)) {
 			/* Enable EDGE CHK in MT7530*/
 			mii_mgr_read(0x1F,TRGMII_7530_RD_0+i*8,&read_data);
 			read_data |= 0x40000000;
 			read_data &= 0x4fffffff;
 			mii_mgr_write(0x1F,TRGMII_7530_RD_0+i*8,read_data);
 			wait_loop();
-		
+#if 0
+			err_cnt[i] = (read_data >> 8) & 0x0000000f;
+#else
 			err_cnt[i] = (read_data >> 8) & 0x0000000f;
 			rd_wd = (read_data >> 16) & 0x000000ff;
 			if (err_cnt[i] != 0 || rd_wd !=0x55){
@@ -1257,7 +1311,7 @@ void trgmii_calibration_7530(void){
 			else {
 				err_flag[i] =0;
 			}
-
+#endif
 			//rd_tap = (read_data & 0x0000007f) + 0x4;                                    // Add RXD delay in MT7530
 			if (err_cnt[i] == 0 && (rd_tap!=128)) {
 			    rd_tap = (read_data & 0x0000007f) + rxd_step_size;                        // Add RXD delay in MT7530
@@ -1272,7 +1326,7 @@ void trgmii_calibration_7530(void){
 			wait_loop();
 		}
 		tap_b[i] = rd_tap;// - rxd_step_size;                                     // Record the max delay TAP_B
-		//printk("%dth bit  Tap_b = %d, ERR_CNT=%d\n", i, tap_b[i],err_cnt[i]);
+		//printf("%dth bit  Tap_b = %d,\n", i, tap_b[i]);
 		final_tap[i] = (tap_a[i]+tap_b[i])/2;                                     //  Calculate RXD delay = (TAP_A + TAP_B)/2
 		//printk("%dth bit Final Tap = %d\n", i, final_tap[i]);
 
@@ -1287,9 +1341,192 @@ void trgmii_calibration_7530(void){
 #else
                 *(volatile u_long *)(TRGMII_7623_base + 0x40) &=0x3fffffff;
 #endif
-
+	
 }
 #endif 	/* defined(MT7623_ASIC_BOARD) */
+
+#if defined (CONFIG_GE2_SGMII_AN) && ((defined(LEOPARD_ASIC_BOARD)) || (defined(LEOPARD_FPGA_BOARD)))
+static void leopard_ethifsys_sgmii1_init(void)
+{
+	unsigned int reg_value;
+
+	/*bit[1]: gphy connect GMAC0 or GMAC2 1:GMAC0. 0:GMAC2*/
+	/*bit[0]: Co-QPHY path selection 0:U3path, 1:SGMII*/
+	*(volatile u_long *)(0x1000070C) = 0x01;
+
+	/* Enable SGMII and choose GMAC2 */
+#define ETHSYS_BASE 0x1b000000
+	//reg_value = sys_reg_read(virt_addr + 0x14);
+	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
+	printf(" 0x1b000014 = 0x%08x\n", reg_value);
+	reg_value |= (1 << 8); //SGMII1 enable
+	//sys_reg_write(virt_addr + 0x14, reg_value);
+	*(volatile u_long *)(ETHSYS_BASE + 0x14) = reg_value;
+	//reg_value = sys_reg_read(virt_addr + 0x14);
+	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
+
+	/* set GMAC2 autopolling*/
+#define GMAC2_BASE 0x1b110200
+	*(volatile u_long *)(GMAC2_BASE) = 0x21056300;
+
+	/* set link timer */
+	*(volatile u_long *)(SGMII_AN_BASE_1 + 0x18) = 0x186a0;
+
+	/* disable remote fault */
+	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE_1 + 0x20));
+	reg_value |= 1 << 8;
+	*(volatile u_long *)(SGMII_AN_BASE_1 + 0x20) = reg_value;
+
+	/* restart an*/
+	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE_1));
+	reg_value |= 1 << 9;
+	*(volatile u_long *)(SGMII_AN_BASE_1) = reg_value;
+
+	/* Release PHYA power down state */
+	//reg_value = sys_reg_read(SGMII_AN_BASE + 0xE8);
+	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE_1 + 0xE8));
+	reg_value &= ~(1 << 4);
+	//sys_reg_write(SGMII_AN_BASE + 0xE8, reg_value);
+	*(volatile u_long *)(SGMII_AN_BASE_1 + 0xE8) = reg_value;
+}
+#endif
+
+#if defined (CONFIG_GE1_SGMII_AN) && ((defined(LEOPARD_ASIC_BOARD)) || (defined(LEOPARD_FPGA_BOARD)))
+static void leopard_ethifsys_sgmii0_init(void)
+{
+	unsigned int reg_value;
+
+	/* Enable SGMII and choose GMAC2 */
+#define ETHSYS_BASE 0x1b000000
+	//reg_value = sys_reg_read(virt_addr + 0x14);
+	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
+	printf(" 0x1b000014 = 0x%08x\n", reg_value);
+	reg_value |= (1 << 9); //SGMII0 enable
+	//sys_reg_write(virt_addr + 0x14, reg_value);
+	*(volatile u_long *)(ETHSYS_BASE + 0x14) = reg_value;
+	//reg_value = sys_reg_read(virt_addr + 0x14);
+	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
+
+	/* set GMAC1 autopolling*/
+#define GMAC1_BASE 0x1b110100
+	*(volatile u_long *)(GMAC1_BASE) = 0x21056300;
+
+	/* set link timer */
+	*(volatile u_long *)(SGMII_AN_BASE + 0x18) = 0x186a0;
+
+	/* disable remote fault */
+	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE + 0x20));
+	reg_value |= 1 << 8;
+	*(volatile u_long *)(SGMII_AN_BASE + 0x20) = reg_value;
+
+	/* restart an*/
+	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE));
+	reg_value |= 1 << 9;
+	*(volatile u_long *)(SGMII_AN_BASE) = reg_value;
+
+	/* Release PHYA power down state */
+	//reg_value = sys_reg_read(SGMII_AN_BASE + 0xE8);
+	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE + 0xE8));
+	reg_value &= ~(1 << 4);
+	//sys_reg_write(SGMII_AN_BASE + 0xE8, reg_value);
+	*(volatile u_long *)(SGMII_AN_BASE + 0xE8) = reg_value;
+}
+#endif
+#if defined (CONFIG_GE1_SGMII_FORCE_2500) || defined (CONFIG_GE2_SGMII_FORCE_2500)
+#if defined (CONFIG_RTL8367)
+static void rtl8367_sw_init(void)
+{
+	int ret = 100;
+
+	ret = rtk_switch_init();
+	printf("rtk_switch_init ret = %d!!!!!!!!!!!!\n", ret);
+	mdelay(500);
+
+	printf("Set RTL8367S SGMII 2.5Gbps\n");
+	rtk_port_mac_ability_t mac_cfg ;
+	rtk_mode_ext_t mode ;
+
+	mode = MODE_EXT_HSGMII;
+	mac_cfg.forcemode = MAC_FORCE;
+	mac_cfg.speed = PORT_SPEED_2500M;
+	mac_cfg.duplex = PORT_FULL_DUPLEX;
+	mac_cfg.link = PORT_LINKUP;
+	mac_cfg.nway = DISABLED;
+	mac_cfg.txpause = DISABLED;
+	mac_cfg.rxpause = DISABLED;
+	ret = rtk_port_macForceLinkExt_set(EXT_PORT0, mode,&mac_cfg);
+	ret = rtk_port_sgmiiNway_set(EXT_PORT0, DISABLED);
+}
+#endif	/* CONFIG_RTL8367 */
+
+static void mt7622_sgmii_force_2500(u32 sgmii_an_base, u32 sgmii_gen_base)
+{
+	unsigned int reg_value;
+
+	/* Set SGMII GEN2 speed(2.5G) */
+	reg_value = le32_to_cpu(*(volatile u_long *)(sgmii_gen_base + 0x28));
+	reg_value |= 1 << 2;
+	*(volatile u_long *)(sgmii_gen_base + 0x28) = reg_value;
+
+	/* disable SGMII AN */
+	reg_value = le32_to_cpu(*(volatile u_long *)(sgmii_an_base));
+	reg_value &= ~(1 << 12);
+	*(volatile u_long *)(sgmii_an_base) = reg_value;
+
+	/* SGMII force mode setting */
+	reg_value = le32_to_cpu(*(volatile u_long *)(sgmii_an_base + 0x20));
+	*(volatile u_long *)(sgmii_an_base + 0x20) = 0x31120019;
+	reg_value = le32_to_cpu(*(volatile u_long *)(sgmii_an_base + 0x20));
+
+	/* Release PHYA power down state */
+	reg_value = le32_to_cpu(*(volatile u_long *)(sgmii_an_base + 0xE8));
+	reg_value &= ~(1 << 4);
+	*(volatile u_long *)(sgmii_an_base + 0xE8) = reg_value;
+}
+
+#define ETHSYS_BASE	0x1b000000
+#define GMAC1_BASE	0x1b110100
+#define GMAC2_BASE	0x1b110200
+
+static void mt7622_ethifsys_sgmii_init(int gmac)
+{
+	unsigned int reg_value;
+
+#if defined(LEOPARD_ASIC_BOARD) || defined(LEOPARD_FPGA_BOARD)
+	if (gmac)
+		*(volatile u_long *)(0x1000070C) = 0x01;
+#endif
+
+	/* Enable SGMII and choose GMAC */
+
+	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
+#if defined(LEOPARD_ASIC_BOARD) || defined(LEOPARD_FPGA_BOARD)
+	if (gmac) {
+		reg_value |= (1 << 8);
+		reg_value &= ~(1 << 9);
+	} else
+#endif
+	{
+		reg_value &= ~(1 << 8);
+		reg_value |= (1 << 9);
+	}
+	*(volatile u_long *)(ETHSYS_BASE + 0x14) = reg_value;
+
+	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
+	printf(" 0x1b000014 = 0x%08x\n", reg_value);
+
+#if defined(LEOPARD_ASIC_BOARD) || defined(LEOPARD_FPGA_BOARD)
+	if (gmac) {
+		*(volatile u_long *)(GMAC2_BASE) = 0x2105e30b;
+		mt7622_sgmii_force_2500(SGMII_AN_BASE_1, SGMII_GEN_BASE_1);
+	} else
+#endif
+	{
+		*(volatile u_long *)(GMAC1_BASE) = 0x2105e30b;
+		mt7622_sgmii_force_2500(SGMII_AN_BASE, SGMII_GEN_BASE);
+	}
+}
+#endif
 
 #if defined(MT7622_ASIC_BOARD)
 static void mt7622_ethifsys_pinmux(void)
@@ -1429,16 +1666,16 @@ static void mt7622_ethifsys_init(void)
 }
 
 #if defined (CONFIG_GE1_SGMII_FORCE_2500)
-static void mt7622_switch_reset(void)
+static void external_switch_reset(void)
 {
 	unsigned int reg_value;
 	
 		/* set GPIO54 as GPIO mode */
-#define GPIO_MODE2 0x10211330
-		reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_MODE2));
+#define MT7622_GPIO_MODE2 0x10211330
+		reg_value = le32_to_cpu(*(volatile u_long *)(MT7622_GPIO_MODE2));
 		reg_value &= 0xfff0ffff;
 		reg_value |= (1 << 16); /* 1: GPIO54 (IO) */
-		*(volatile u_long *)(GPIO_MODE2) = reg_value;
+		*(volatile u_long *)(MT7622_GPIO_MODE2) = reg_value;
 
 		/* set GPIO54 as output mode */
 #define GPIO_DIR1 0x10211010
@@ -1458,93 +1695,6 @@ static void mt7622_switch_reset(void)
 		reg_value |= (1 << 22); /* output 1 */
 		*(volatile u_long *)(GPIO_DOUT2) = reg_value;
 		mdelay(100);
-}
-
-static void mt7622_rtl8367_sw_init(void)
-{
-#if defined (CONFIG_RTL8367)
-	int ret = 100;
-	unsigned int reg_value;
-
-	ret = rtk_switch_init();
-	printf("rtk_switch_init ret = %d!!!!!!!!!!!!\n", ret);
-	mdelay(500);
-
-	reg_value = 0;
-	smi_write(0x13A0, 0x5678);
-	mdelay(100);
-	smi_read(0x13A0, &reg_value);
-	printf("rtk_switch reg = 0x%x !!!!!!!!!!!!\n", reg_value);
-	printf("Set RTL8367S SGMII 2.5Gbps\n");
-	rtk_port_mac_ability_t mac_cfg ;
-	rtk_mode_ext_t mode ;
-
-	mode = MODE_EXT_HSGMII;
-	mac_cfg.forcemode = MAC_FORCE;
-	mac_cfg.speed = PORT_SPEED_2500M;
-	mac_cfg.duplex = PORT_FULL_DUPLEX;
-	mac_cfg.link = PORT_LINKUP;
-	mac_cfg.nway = DISABLED;
-	mac_cfg.txpause = DISABLED;
-	mac_cfg.rxpause = DISABLED;
-	ret = rtk_port_macForceLinkExt_set(EXT_PORT0, mode,&mac_cfg);
-	printf("rtk_port_macForceLinkExt_set return value is %d\n", ret);
-	ret = rtk_port_sgmiiNway_set(EXT_PORT0, DISABLED);
-	printf("rtk_port_sgmiiNway_set return value is %d\n", ret);
-#endif	/* CONFIG_RTL8367 */
-}
-
-static void mt7622_ethifsys_sgmii_init(void)
-{
-	unsigned int reg_value;
-
-	/* Enable SGMII and choose GMAC2 */
-#define ETHSYS_BASE 0x1b000000
-	//reg_value = sys_reg_read(virt_addr + 0x14);
-	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
-	printf(" 0x1b000014 = 0x%08x\n", reg_value);
-	reg_value |= (1 << 9);
-	reg_value &= ~(1 << 8);	/* GMAC1 */
-	//sys_reg_write(virt_addr + 0x14, reg_value);
-	*(volatile u_long *)(ETHSYS_BASE + 0x14) = reg_value;
-	//reg_value = sys_reg_read(virt_addr + 0x14);
-	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
-
-	/* set GMAC1 forced link at 1Gbps FDX */
-#define GMAC1_BASE 0x1b110100
-	//sys_reg_write(GMAC1_BASE, 0x2105e30b);
-	*(volatile u_long *)(GMAC1_BASE) = 0x2105e30b;
-
-	/* Set SGMII GEN2 speed(2.5G) */
-#define SGMII_GEN_BASE 0x1b12a000
-	//reg_value = sys_reg_read(SGMII_GEN_BASE + 0x28);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_GEN_BASE + 0x28));
-	reg_value |= 1 << 2;
-	//sys_reg_write(SGMII_GEN_BASE + 0x28, reg_value);
-	*(volatile u_long *)(SGMII_GEN_BASE + 0x28) = reg_value;
-
-	/* disable SGMII AN */
-#define SGMII_AN_BASE 0x1b128000
-	//reg_value = sys_reg_read(SGMII_AN_BASE);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE));
-	reg_value &= ~(1 << 12);
-	//sys_reg_write(SGMII_AN_BASE, reg_value);
-	*(volatile u_long *)(SGMII_AN_BASE) = reg_value;
-
-	/* SGMII force mode setting */
-	//reg_value = sys_reg_read(SGMII_AN_BASE + 0x20);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE + 0x20));
-	//sys_reg_write(SGMII_AN_BASE + 0x20, 0x31120019);
-	*(volatile u_long *)(SGMII_AN_BASE + 0x20) = 0x31120019;
-	//reg_value = sys_reg_read(SGMII_AN_BASE + 0x20);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE + 0x20));
-
-	/* Release PHYA power down state */
-	//reg_value = sys_reg_read(SGMII_AN_BASE + 0xE8);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE + 0xE8));
-	reg_value &= ~(1 << 4);
-	//sys_reg_write(SGMII_AN_BASE + 0xE8, reg_value);
-	*(volatile u_long *)(SGMII_AN_BASE + 0xE8) = reg_value;
 }
 #endif	/* CONFIG_GE1_SGMII_FORCE_2500 */
 
@@ -1571,21 +1721,9 @@ static void mt7622_ethifsys_esw_init(void)
 
 
 
-#if (defined(MT7626_ASIC_BOARD)) || (defined(MT7626_FPGA_BOARD))
-static void mt7626_ethifsys_pinmux(void)
-{
-#define GE2_RGMII_GPIO	0x10211300
+#if defined(LEOPARD_ASIC_BOARD) || defined(LEOPARD_FPGA_BOARD)
 
-	u32 temp;
-
-	//temp = sys_reg_read(ge2_rgmii);
-	temp = (le32_to_cpu(*(volatile u_long *)GE2_RGMII_GPIO));
-	temp &= 0xffff0fff;
-	//sys_reg_write(ge2_rgmii, temp);
-	*(volatile u_long *)(GE2_RGMII_GPIO) = temp;
-}
-
-static void mt7626_ethifsys_init(void)
+static void leopard_ethifsys_init(void)
 {
 #define INFRACFG_A0_BASE		0x10000000
 #define INFRA_TOPAXI_PROTECTEN	(INFRACFG_A0_BASE + 0x220)
@@ -1708,145 +1846,29 @@ static void mt7626_ethifsys_init(void)
 	}
 }
 
-#if defined (CONFIG_GE1_SGMII_FORCE_2500)
-static void mt7626_switch_reset(void)
-{
-	unsigned int reg_value;
-		/* set GPIO54 as GPIO mode */
-#define GPIO_MODE2 0x10211330
-		reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_MODE2));
-		reg_value &= 0xfff0ffff;
-		reg_value |= (1 << 16); /* 1: GPIO54 (IO) */
-		*(volatile u_long *)(GPIO_MODE2) = reg_value;
-
-		/* set GPIO54 as output mode */
-#define GPIO_DIR1 0x10211010
-		reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_DIR1));
-		reg_value |= (1 << 22);	/* output */
-		*(volatile u_long *)(GPIO_DIR1) = reg_value;
-
-		/* set GPIO54 output low */
-#define GPIO_DOUT2 0x10211110
-		reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_DOUT2));
-		reg_value &= ~(1 << 22); /* output 0 */
-		*(volatile u_long *)(GPIO_DOUT2) = reg_value;
-		mdelay(100);
-
-		/* set GPIO54 output high */
-		reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_DOUT2));
-		reg_value |= (1 << 22); /* output 1 */
-		*(volatile u_long *)(GPIO_DOUT2) = reg_value;
-		mdelay(100);
-}
-
-static void mt7626_rtl8367_sw_init(void)
-{
-#if defined (CONFIG_RTL8367)
-	int ret = 100;
-	unsigned int reg_value;
-
-	ret = rtk_switch_init();
-	printf("rtk_switch_init ret = %d!!!!!!!!!!!!\n", ret);
-	mdelay(500);
-
-	reg_value = 0;
-	smi_write(0x13A0, 0x5678);
-	mdelay(100);
-	smi_read(0x13A0, &reg_value);
-	printf("rtk_switch reg = 0x%x !!!!!!!!!!!!\n", reg_value);
-	printf("Set RTL8367S SGMII 2.5Gbps\n");
-	rtk_port_mac_ability_t mac_cfg ;
-	rtk_mode_ext_t mode ;
-
-	mode = MODE_EXT_HSGMII;
-	mac_cfg.forcemode = MAC_FORCE;
-	mac_cfg.speed = PORT_SPEED_2500M;
-	mac_cfg.duplex = PORT_FULL_DUPLEX;
-	mac_cfg.link = PORT_LINKUP;
-	mac_cfg.nway = DISABLED;
-	mac_cfg.txpause = DISABLED;
-	mac_cfg.rxpause = DISABLED;
-	ret = rtk_port_macForceLinkExt_set(EXT_PORT0, mode,&mac_cfg);
-	printf("rtk_port_macForceLinkExt_set return value is %d\n", ret);
-	ret = rtk_port_sgmiiNway_set(EXT_PORT0, DISABLED);
-	printf("rtk_port_sgmiiNway_set return value is %d\n", ret);
-#endif	/* CONFIG_RTL8367 */
-}
-
-static void mt7626_ethifsys_sgmii_init(void)
-{
-	unsigned int reg_value;
-
-	/* Enable SGMII and choose GMAC2 */
-#define ETHSYS_BASE 0x1b000000
-	//reg_value = sys_reg_read(virt_addr + 0x14);
-	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
-	printf(" 0x1b000014 = 0x%08x\n", reg_value);
-	reg_value |= (1 << 9);
-	reg_value &= ~(1 << 8);	/* GMAC1 */
-	//sys_reg_write(virt_addr + 0x14, reg_value);
-	*(volatile u_long *)(ETHSYS_BASE + 0x14) = reg_value;
-	//reg_value = sys_reg_read(virt_addr + 0x14);
-	reg_value = le32_to_cpu(*(volatile u_long *)(ETHSYS_BASE + 0x14));
-
-	/* set GMAC1 forced link at 1Gbps FDX */
-#define GMAC1_BASE 0x1b110100
-	//sys_reg_write(GMAC1_BASE, 0x2105e30b);
-	*(volatile u_long *)(GMAC1_BASE) = 0x2105e30b;
-
-	/* Set SGMII GEN2 speed(2.5G) */
-#define SGMII_GEN_BASE 0x1b12a000
-	//reg_value = sys_reg_read(SGMII_GEN_BASE + 0x28);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_GEN_BASE + 0x28));
-	reg_value |= 1 << 2;
-	//sys_reg_write(SGMII_GEN_BASE + 0x28, reg_value);
-	*(volatile u_long *)(SGMII_GEN_BASE + 0x28) = reg_value;
-
-	/* disable SGMII AN */
-#define SGMII_AN_BASE 0x1b128000
-	//reg_value = sys_reg_read(SGMII_AN_BASE);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE));
-	reg_value &= ~(1 << 12);
-	//sys_reg_write(SGMII_AN_BASE, reg_value);
-	*(volatile u_long *)(SGMII_AN_BASE) = reg_value;
-
-	/* SGMII force mode setting */
-	//reg_value = sys_reg_read(SGMII_AN_BASE + 0x20);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE + 0x20));
-	//sys_reg_write(SGMII_AN_BASE + 0x20, 0x31120019);
-	*(volatile u_long *)(SGMII_AN_BASE + 0x20) = 0x31120019;
-	//reg_value = sys_reg_read(SGMII_AN_BASE + 0x20);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE + 0x20));
-
-	/* Release PHYA power down state */
-	//reg_value = sys_reg_read(SGMII_AN_BASE + 0xE8);
-	reg_value = le32_to_cpu(*(volatile u_long *)(SGMII_AN_BASE + 0xE8));
-	reg_value &= ~(1 << 4);
-	//sys_reg_write(SGMII_AN_BASE + 0xE8, reg_value);
-	*(volatile u_long *)(SGMII_AN_BASE + 0xE8) = reg_value;
-}
-#endif	/* CONFIG_GE1_SGMII_FORCE_2500 */
-
 #if defined (CONFIG_GE1_ESW)
-static void mt7626_ethifsys_esw_init(void)
+static void leopard_ethifsys_esw_init(void)
 {
 	/* EPHY setting */
 	*(volatile u_long *)(0x1b11000c) = 1;
-	*(volatile u_long *)(0x1b118084) = 0xffdf1f00;
+	*(volatile u_long *)(0x1b118084) = 0xff9f1f00;
 	*(volatile u_long *)(0x1b118090) = 0x7f7f;
-	*(volatile u_long *)(0x1b1180c8) = 0x05503f38;
-
+	*(volatile u_long *)(0x1b1180c8) = 0x05503ffa;
 	/* To CPU setting */
 	*(volatile u_long *)(0x1b11808c) = 0x02404040;
-
 	/* vlan untag */
 	*(volatile u_long *)(0x1b118098) = 0x7f7f;
-
 	/* AGPIO setting */
-	*(volatile u_long *)(0x102118F0) = 0x00555555;
+	*(volatile u_long *)(0x10000710) = 0x08000020;
+	/* gmac0 connect gphy*/
+	/*bit[1]: gphy connect GMAC0 or GMAC2 1:GMAC0. 0:GMAC2*/
+	/*bit[0]: Co-QPHY path selection 0:U3path, 1:SGMII*/
+	*(volatile u_long *)(0x1000070C) = 0x02;
+#define GMAC1_BASE 0x1b110100
+	*(volatile u_long *)(GMAC1_BASE) = 0x21056300;
 }
 #endif
-#endif /* (defined(MT7626_ASIC_BOARD)) || (defined(MT7626_FPGA_BOARD)) */
+#endif /* (defined(LEOPARD_ASIC_BOARD)) || (defined(LEOPARD_FPGA_BOARD)) */
 
 
 
@@ -1907,28 +1929,87 @@ static void eth_pinmux_power_init(void)
 #elif defined(MT7622_ASIC_BOARD)
 	mt7622_ethifsys_pinmux();
 	mt7622_ethifsys_init();
-#elif (defined(MT7626_ASIC_BOARD)) || (defined(MT7626_FPGA_BOARD))
-	mt7626_ethifsys_pinmux();
-	mt7626_ethifsys_init();
+#elif defined(LEOPARD_ASIC_BOARD) || defined(LEOPARD_FPGA_BOARD)
+	/*leopard_ethifsys_pinmux();*/ /*GMII no need*/
+	leopard_ethifsys_init();
 #endif
 }
 
+#if defined(LEOPARD_ASIC_BOARD) || defined(LEOPARD_FPGA_BOARD)
+static void external_switch_reset(void)
+{
+	unsigned int reg_value;
+
+	/* set GPIO28 as GPIO mode */
+#define GPIO_MODE3 0x10217330
+	reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_MODE3));
+	reg_value &= ~(0xf << 16);
+	*(volatile u_long *)(GPIO_MODE3) = reg_value;
+
+	/* set GPIO28 as output mode */
+#define GPIO_DIR1 0x10217000
+	reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_DIR1));
+	reg_value |= (1 << 28);	/* output */
+	*(volatile u_long *)(GPIO_DIR1) = reg_value;
+
+	/* set GPIO28 output low */
+#define GPIO_DOUT1 0x10217100
+	reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_DOUT1));
+	reg_value &= ~(1 << 28); /* output 0 */
+	*(volatile u_long *)(GPIO_DOUT1) = reg_value;
+	mdelay(100);
+
+	/* set GPIO28 output high */
+	reg_value = le32_to_cpu(*(volatile u_long *)(GPIO_DOUT1));
+	reg_value |= (1 << 28); /* output 1 */
+	*(volatile u_long *)(GPIO_DOUT1) = reg_value;
+	mdelay(100);
+}
+#endif
+
 static void eth_switch_init(void)
 {
-#if defined (CONFIG_GE1_SGMII_FORCE_2500)
-	mt7622_switch_reset();
-	mt7622_rtl8367_sw_init();		/* RTL8367 Init */
-	mt7622_ethifsys_sgmii_init();		/* MT7622 SGMII Init */
+#if defined(CONFIG_MT7531)
+	struct mt7531_port_cfg port6_cfg = {
+		.phy_mode = PHY_INTERFACE_MODE_SGMII,
+		.enabled = 1,
+		.force_link = 1,
+		.speed = MAC_SPD_2500,
+		.duplex = 1
+	};
+#endif
+
+#if defined (CONFIG_GE1_SGMII_FORCE_2500) || defined (CONFIG_GE2_SGMII_FORCE_2500)
+	external_switch_reset();
+
+#if defined(CONFIG_MT7531)
+	mt7531_sw_init(NULL, &port6_cfg);
+#else
+	rtl8367_sw_init();
+#endif
+
+#if defined(CONFIG_GE1_SGMII_FORCE_2500)
+	mt7622_ethifsys_sgmii_init(0);		/* MT7622/Leopard SGMII0 Init */
+#else
+	mt7622_ethifsys_sgmii_init(1);		/* Leopard SGMII1 Init */
+#endif
+
+#if defined(CONFIG_RTL8367)
 	rtk_port_phyEnableAll_set(ENABLED);
+#endif
 #elif (defined (CONFIG_GE1_ESW)) && ((defined(MT7622_ASIC_BOARD)) || (defined(MT7622_FPGA_BOARD)))
 	mt7622_ethifsys_esw_init();
-#elif (defined (CONFIG_GE1_ESW)) && ((defined(MT7626_ASIC_BOARD)) || (defined(MT7626_FPGA_BOARD)))
-	mt7626_ethifsys_esw_init();
+#elif (defined (CONFIG_GE1_ESW)) && ((defined(LEOPARD_ASIC_BOARD)) || (defined(LEOPARD_FPGA_BOARD)))
+	leopard_ethifsys_esw_init();
 #elif defined (CONFIG_GE1_TRGMII_FORCE_2000) || defined (CONFIG_GE1_TRGMII_FORCE_2600)
 	*(volatile u_long *)(0x1b00002c) |=  (1<<11);
 #elif defined (GE_RGMII_FORCE_1000) && defined (CONFIG_USE_GE1)
 	*(volatile u_long *)(0x1b00002c) &= ~(1<<11);
-#endif	/* CONFIG_GE1_TRGMII_FORCE_2000 */
+#elif defined (CONFIG_GE2_SGMII_AN) && ((defined(LEOPARD_ASIC_BOARD)) || (defined(LEOPARD_FPGA_BOARD)))
+	leopard_ethifsys_sgmii1_init();
+#elif defined (CONFIG_GE1_SGMII_AN) && ((defined(LEOPARD_ASIC_BOARD)) || (defined(LEOPARD_FPGA_BOARD)))
+	leopard_ethifsys_sgmii0_init();
+#endif
 }
 
 void setup_internal_gsw(void)
@@ -2129,6 +2210,10 @@ void setup_internal_gsw(void)
 	/* TRGMII Clock */
 //      printf("Set TRGMII mode clock stage 1\n");
         mii_mgr_write(0, 13, 0x1f);
+        mii_mgr_write(0, 14, 0x410);
+        mii_mgr_write(0, 13, 0x401f);
+        mii_mgr_write(0, 14, 0x1);
+        mii_mgr_write(0, 13, 0x1f);
         mii_mgr_write(0, 14, 0x404);
         mii_mgr_write(0, 13, 0x401f);
         if (xtal_mode == 1){ //25MHz
@@ -2233,7 +2318,34 @@ void setup_internal_gsw(void)
         udelay(100); // for mt7623 bring up test
 
 	printf(" Release MT7623 RXC Reset\n");
-        *(volatile u_long *)(0x1b110300) &= 0x7fffffff;   // Release MT7623 RXC reset
+    *(volatile u_long *)(0x1b110300) &= 0x7fffffff;   // Release MT7623 RXC reset
+#if defined(MT7623_ASIC_BOARD)
+#if defined (CONFIG_USE_GE1)
+        trgmii_calibration_7623();
+        trgmii_calibration_7530();
+        //*(volatile u_long *)(0xfb110300) |= (0x1f << 24);     //Just only for 312.5/325MHz
+        *(volatile u_long *)(0x1b110300) |= 0x80000000;         // Assert RX  reset in MT7623
+        *(volatile u_long *)(0x1b110300 )&= 0x7fffffff;   // Release RX reset in MT7623
+#if defined (GE_RGMII_FORCE_1000)
+    /*GE1@125MHz(RGMII mode) TX delay adjustment*/
+            *(volatile u_long *)(0x1b110350) = 0x55;
+            *(volatile u_long *)(0x1b110358) = 0x55;
+            *(volatile u_long *)(0x1b110360) = 0x55;
+            *(volatile u_long *)(0x1b110368) = 0x55;
+            *(volatile u_long *)(0x1b110370) = 0x55;
+            *(volatile u_long *)(0x1b110378) = 0x855;
+#endif  /* CONFIG_GE1_RGMII_FORCE_1000 */
+#endif  /* CONFIG_GE1_RGMII_FORCE_1000 */
+#endif
+        /*TRGMII DEBUG*/
+    mii_mgr_read(31, 0x7a00 ,&regValue);
+    regValue |= (0x1<<31);
+    mii_mgr_write(31, 0x7a00, regValue);
+    mdelay(1);
+    regValue &= ~(0x1<<31);
+    mii_mgr_write(31, 0x7a00, regValue);
+    mdelay(100);
+	
 	for(i=0;i<=4;i++)
 	{
 	    mii_mgr_write(i, 13, 0x7);
@@ -2282,7 +2394,8 @@ void setup_internal_gsw(void)
 
 static void eth_trgmii_calibration(void)
 {
-#if defined(MT7623_ASIC_BOARD)
+#if 0
+//#if defined(MT7623_ASIC_BOARD)
 #if defined (CONFIG_USE_GE1)
 	trgmii_calibration_7623();
 	trgmii_calibration_7530();
@@ -2406,7 +2519,11 @@ static int rt2880_eth_setup(struct eth_device* dev)
 	RALINK_REG(RALINK_ETH_SW_BASE+0x200) = 0x00008000;//(P1, Down)
 	RALINK_REG(RT2880_SYSCFG1_REG) &= ~(0x3 << 12); //GE1_MODE=RGMII Mode  
 #elif defined (CONFIG_USE_GE2)
+#if defined (LEOPARD_FPGA_BOARD)
+	RALINK_REG(RALINK_ETH_SW_BASE+0x200) = 0x2105e303;//(P1, force mode)
+#else
 	RALINK_REG(RALINK_ETH_SW_BASE+0x200) = 0x20056300;//(P1, Auto mode)
+#endif
 	RALINK_REG(RALINK_ETH_SW_BASE+0x100) = 0x00008000;//(P0, Down)
 	RALINK_REG(RT2880_SYSCFG1_REG) &= ~(0x3 << 14); //GE2_MODE=RGMII Mode
 #endif
@@ -2840,7 +2957,7 @@ int rdm_ioctl(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 U_BOOT_CMD(
  	reg,	4,	1,	rdm_ioctl,
- 	"reg   - Ralink PHY register R/W command !!\n",
+ 	"reg   - Mediatek PHY register R/W command !!\n",
  	"reg.s [phy_addr(hex)] - set register base \n"
  	"reg.r [phy_addr(hex)] - read register \n"
  	"reg.w [phy_addr(hex)] [data(HEX)] - write register \n"

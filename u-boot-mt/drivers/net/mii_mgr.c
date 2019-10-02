@@ -1,6 +1,6 @@
 #include <common.h>
 #include <command.h>
-#include <rt_mmap.h>
+#include "eth.h"
 
 #define outw(address, value)    *((volatile uint32_t *)(address)) = cpu_to_le32(value)
 #define inw(address)            le32_to_cpu(*(volatile u32 *)(address))
@@ -15,6 +15,7 @@
 #define GPIO_PRUPOSE		(RALINK_SYSCTL_BASE + GPIO_PURPOSE_SELECT)
 
 #define CFG_HZ              100
+#define MAX_PHY_RW_WAIT_CNT (100000)
 
 
 u32 __mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
@@ -157,6 +158,124 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 	}
 
 	return 0;
+}
+
+u32 mii_mgr_cl45_set_address(u32 port_num, u32 dev_addr, u32 reg_addr)
+{
+	u32 rc = 0;
+	u32 data = 0;
+	u32 count;
+
+	count = 0;
+	while (1) {
+		if (!(inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) {
+			break;
+		} else if (count > MAX_PHY_RW_WAIT_CNT) {
+			printf("\n MDIO Read CL45 operation is ongoing !!\n");
+			return rc;
+		}
+		count++;
+	}
+	data =
+	    (dev_addr << 25) | (port_num << 20) | (0x00 << 18) | (0x00 << 16) |
+	    reg_addr;
+	outw(MDIO_PHY_CONTROL_0, data);
+	outw(MDIO_PHY_CONTROL_0, (data | (1 << 31)));
+
+	count = 0;
+	while (1) {
+		if (!(inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) {
+			return 1;
+		} else if (count > MAX_PHY_RW_WAIT_CNT) {
+			printf("\n MDIO Write CL45 operation Time Out\n");
+			return 0;
+		}
+		count ++;
+	}
+}
+
+u32 mii_mgr_write_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 write_data)
+{
+	u32 count;
+	u32 data = 0;
+
+	/* set address first */
+	mii_mgr_cl45_set_address(port_num, dev_addr, reg_addr);
+	/* udelay(10); */
+	count = 0;
+	while (1) {
+		if (!(inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) {
+			break;
+		} else if (count > MAX_PHY_RW_WAIT_CNT) {
+			printf("\n MDIO CL45 Write operation ongoing\n");
+			return 0;
+		}
+		count++;
+	}
+
+	data =
+	    (dev_addr << 25) | (port_num << 20) | (0x01 << 18) | (0x00 << 16) |
+	    write_data;
+	outw(MDIO_PHY_CONTROL_0, data);
+	outw(MDIO_PHY_CONTROL_0, (data | (1 << 31)));
+	count = 0;
+	while (1) {
+		if (!(inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) {
+			return 1;
+		} else if (count > MAX_PHY_RW_WAIT_CNT) {
+			printf("\n MDIO CL45 Write operation Time Out\n");
+			return 0;
+		}
+		count++;
+	}
+
+}
+
+u32 mii_mgr_read_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 *read_data)
+{
+	u32 rc = 0;
+	u32 data = 0;
+	u32 count;
+
+	/* set address first */
+	mii_mgr_cl45_set_address(port_num, dev_addr, reg_addr);
+	/* udelay(10); */
+
+
+	count = 0;
+	while (1) {
+		if (!(inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) {
+			break;
+		} else if (count > MAX_PHY_RW_WAIT_CNT) {
+			rc = 0;
+			printf("\n MDIO Read operation is ongoing !!\n");
+			return rc;
+		}
+		count++;
+	}
+	data =
+	    (dev_addr << 25) | (port_num << 20) | (0x03 << 18) | (0x00 << 16) |
+	    reg_addr;
+	outw(MDIO_PHY_CONTROL_0, data);
+	outw(MDIO_PHY_CONTROL_0, (data | (1 << 31)));
+	
+	count = 0;
+
+	while (1) {
+		if (!(inw(MDIO_PHY_CONTROL_0) & (0x1 << 31))) {
+			*read_data =
+			    (inw(MDIO_PHY_CONTROL_0) & 0x0000FFFF);
+			rc = 1;
+			return rc;
+		} else if (count > MAX_PHY_RW_WAIT_CNT) {
+			rc = 0;
+			printf
+			    ("\n MDIO Read operation Time Out!!\n");
+			return rc;
+		}
+		count++;
+	}
+	return rc;
 }
 
 void dump_phy_reg(int port_no, int from, int to, int is_local, int page_no)
@@ -334,7 +453,7 @@ int rt2880_mdio_access(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]
 
 U_BOOT_CMD(
  	mdio,	4,	1,	rt2880_mdio_access,
- 	"mdio   - Ralink PHY register R/W command !!\n",
+ 	"mdio   - Mediatek PHY register R/W command !!\n",
  	"mdio.r [phy_addr(dec)] [reg_addr(dec)] \n"
  	"mdio.w [phy_addr(dec)] [reg_addr(dec)] [data(HEX)] \n"
  	"mdio.anoff GMAC1 Force link status enable !!  \n"

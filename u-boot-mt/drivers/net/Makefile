@@ -70,3 +70,4 @@ obj-$(CONFIG_ZYNQ_GEM) += zynq_gem.o
 obj-$(CONFIG_RT2880_ETH) += rt2880_eth.o
 obj-$(CONFIG_RT2880_ETH) += mii_mgr.o
 obj-$(CONFIG_RTL8367) += rtl8367c/
+obj-$(CONFIG_MT7531) += mt7531.o
