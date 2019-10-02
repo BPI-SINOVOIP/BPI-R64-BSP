@@ -1,1 +1,0 @@
-cmd_drivers/misc/mediatek/thermal/mt7622/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/misc/mediatek/thermal/mt7622/built-in.o drivers/misc/mediatek/thermal/mt7622/mtk_thermal_platform.o drivers/misc/mediatek/thermal/mt7622/mtk_thermal_timer.o drivers/misc/mediatek/thermal/mt7622/mtk_ts_bts.o drivers/misc/mediatek/thermal/mt7622/mtk_ts_cpu.o 

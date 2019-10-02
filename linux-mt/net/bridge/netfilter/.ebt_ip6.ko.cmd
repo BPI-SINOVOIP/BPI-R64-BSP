@@ -1,1 +1,0 @@
-cmd_net/bridge/netfilter/ebt_ip6.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/bridge/netfilter/ebt_ip6.ko net/bridge/netfilter/ebt_ip6.o net/bridge/netfilter/ebt_ip6.mod.o

@@ -1,2 +1,0 @@
-rtl8367c_asicdrv_hsb.c:37:7:rtl8367c_setAsicFieldSelector	0	static
-rtl8367c_asicdrv_hsb.c:68:7:rtl8367c_getAsicFieldSelector	24	static

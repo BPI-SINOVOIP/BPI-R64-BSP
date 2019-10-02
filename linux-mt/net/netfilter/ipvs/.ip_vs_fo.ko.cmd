@@ -1,1 +1,0 @@
-cmd_net/netfilter/ipvs/ip_vs_fo.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/netfilter/ipvs/ip_vs_fo.ko net/netfilter/ipvs/ip_vs_fo.o net/netfilter/ipvs/ip_vs_fo.mod.o

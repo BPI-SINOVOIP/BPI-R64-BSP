@@ -1,1 +1,0 @@
-cmd_drivers/soc/mediatek/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/soc/mediatek/built-in.o drivers/soc/mediatek/mtk-infracfg.o drivers/soc/mediatek/mtk-pmic-wrap.o drivers/soc/mediatek/mtk-scpsys.o drivers/soc/mediatek/mtk-scpsys-bringup.o 

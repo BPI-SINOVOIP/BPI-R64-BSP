@@ -1,9 +1,0 @@
-partition_mt.c:148:6:get_part_tab_from_complier	8	static
-partition_mt.c:155:5:part_get_startaddress	16	static
-partition_mt.c:182:6:raw_partition	0	static
-partition_mt.c:189:5:find_empty_page_from_top	160	static
-partition_mt.c:266:6:find_mirror_pt_from_bottom	96	static
-partition_mt.c:337:5:load_exist_part_tab	96	static
-partition_mt.c:453:6:construct_mtd_partition	40	static
-partition_mt.c:509:6:part_init_pmt	0	static
-partition_mt.c:589:5:get_part_num_nand	0	static

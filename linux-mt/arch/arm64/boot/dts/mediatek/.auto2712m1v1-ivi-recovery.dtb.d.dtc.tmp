@@ -1,1 +1,0 @@
-arch/arm64/boot/dts/mediatek/auto2712m1v1-ivi-recovery.dtb: arch/arm64/boot/dts/mediatek/.auto2712m1v1-ivi-recovery.dtb.dts.tmp arch/arm64/boot/dts/mediatek/mt2712-sched-energy.dtsi

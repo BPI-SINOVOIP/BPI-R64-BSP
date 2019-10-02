@@ -1,5 +1,0 @@
-kernel/drivers/scsi/scsi_transport_iscsi.ko
-kernel/drivers/scsi/libiscsi.ko
-kernel/drivers/scsi/libiscsi_tcp.ko
-kernel/drivers/scsi/iscsi_tcp.ko
-kernel/drivers/scsi/osd/libosd.ko

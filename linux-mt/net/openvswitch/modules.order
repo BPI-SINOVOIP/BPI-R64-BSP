@@ -1,4 +1,0 @@
-kernel/net/openvswitch/openvswitch.ko
-kernel/net/openvswitch/vport-vxlan.ko
-kernel/net/openvswitch/vport-geneve.ko
-kernel/net/openvswitch/vport-gre.ko

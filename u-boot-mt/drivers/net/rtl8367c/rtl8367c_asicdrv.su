@@ -1,6 +1,0 @@
-rtl8367c_asicdrv.c:58:7:rtl8367c_setAsicRegBit	24	static
-rtl8367c_asicdrv.c:168:7:rtl8367c_getAsicRegBit	24	static
-rtl8367c_asicdrv.c:246:7:rtl8367c_setAsicRegBits	24	static
-rtl8367c_asicdrv.c:407:7:rtl8367c_getAsicRegBits	24	static
-rtl8367c_asicdrv.c:522:7:rtl8367c_setAsicReg	8	static
-rtl8367c_asicdrv.c:589:7:rtl8367c_getAsicReg	16	static

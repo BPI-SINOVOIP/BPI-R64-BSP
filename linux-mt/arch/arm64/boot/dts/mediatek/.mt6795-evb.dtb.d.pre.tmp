@@ -1,4 +1,0 @@
-mt6795-evb.o: arch/arm64/boot/dts/mediatek/mt6795-evb.dts \
- arch/arm64/boot/dts/mediatek/mt6795.dtsi \
- arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/irq.h \
- arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/arm-gic.h

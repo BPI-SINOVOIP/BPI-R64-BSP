@@ -1,1 +1,0 @@
-cmd_drivers/net/irda/ksdazzle-sir.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o drivers/net/irda/ksdazzle-sir.ko drivers/net/irda/ksdazzle-sir.o drivers/net/irda/ksdazzle-sir.mod.o

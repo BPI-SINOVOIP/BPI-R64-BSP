@@ -1,1 +1,0 @@
-cmd_net/ipv4/netfilter/ipt_ECN.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/ipt_ECN.ko net/ipv4/netfilter/ipt_ECN.o net/ipv4/netfilter/ipt_ECN.mod.o

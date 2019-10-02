@@ -1,1 +1,0 @@
-cmd_net/ipv4/netfilter/ipt_SYNPROXY.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/ipt_SYNPROXY.ko net/ipv4/netfilter/ipt_SYNPROXY.o net/ipv4/netfilter/ipt_SYNPROXY.mod.o

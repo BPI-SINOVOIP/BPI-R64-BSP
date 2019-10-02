@@ -1,2 +1,0 @@
-smi.c:210:11:smi_read	16	static
-smi.c:326:11:smi_write	16	static

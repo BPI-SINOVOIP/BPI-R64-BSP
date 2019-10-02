@@ -1,1 +1,0 @@
-cmd_drivers/pci/host/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o drivers/pci/host/built-in.o drivers/pci/host/pci-host-generic.o drivers/pci/host/pcie-iproc.o drivers/pci/host/phy-mediatek-pcie.o drivers/pci/host/pci-mediatek.o 

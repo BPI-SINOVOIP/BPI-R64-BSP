@@ -1,1 +1,0 @@
-cmd_ipc/built-in.o :=  aarch64-linux-gnu-ld -EL    -r -o ipc/built-in.o ipc/compat.o ipc/util.o ipc/msgutil.o ipc/msg.o ipc/sem.o ipc/shm.o ipc/syscall.o ipc/ipc_sysctl.o ipc/mqueue.o ipc/compat_mq.o ipc/namespace.o ipc/mq_sysctl.o 

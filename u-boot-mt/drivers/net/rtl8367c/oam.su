@@ -1,7 +1,0 @@
-oam.c:43:15:rtk_oam_init	0	static
-oam.c:65:15:rtk_oam_state_set	8	static
-oam.c:97:15:rtk_oam_state_get	8	static
-oam.c:128:16:rtk_oam_parserAction_set	16	static
-oam.c:162:16:rtk_oam_parserAction_get	16	static
-oam.c:195:16:rtk_oam_multiplexerAction_set	16	static
-oam.c:229:16:rtk_oam_multiplexerAction_get	16	static

@@ -1,1 +1,0 @@
-cmd_net/netfilter/ipset/ip_set_hash_ip.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/netfilter/ipset/ip_set_hash_ip.ko net/netfilter/ipset/ip_set_hash_ip.o net/netfilter/ipset/ip_set_hash_ip.mod.o

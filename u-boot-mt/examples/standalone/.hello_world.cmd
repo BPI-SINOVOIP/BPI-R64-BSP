@@ -1,1 +1,0 @@
-cmd_examples/standalone/hello_world := arm-linux-gnueabihf-ld.bfd  -g -Ttext 0xc100000 -o examples/standalone/hello_world -e hello_world examples/standalone/hello_world.o examples/standalone/libstubs.o -L/usr/lib/gcc-cross/arm-linux-gnueabihf/5 -lgcc

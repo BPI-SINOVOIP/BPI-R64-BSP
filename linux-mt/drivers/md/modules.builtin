@@ -1,3 +1,0 @@
-kernel/drivers/md/md-mod.ko
-kernel/drivers/md/dm-mod.ko
-kernel/drivers/md/dm-crypt.ko

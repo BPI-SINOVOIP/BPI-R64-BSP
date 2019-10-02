@@ -1,7 +1,0 @@
-rtk_hal.c:16:15:rtk_hal_switch_init	16	static
-rtk_hal.c:38:5:rtk_hal_dump_vlan	40	static
-rtk_hal.c:57:6:rtk_dump_unicast_table	88	static
-rtk_hal.c:138:5:rtk_hal_dump_table	8	static
-rtk_hal.c:148:6:rtk_dump_mib_type	24	static
-rtk_hal.c:164:6:rtk_hal_dump_mib	16	static
-rtk_hal.c:213:6:rtk_hal_disable_igmpsnoop	0	static

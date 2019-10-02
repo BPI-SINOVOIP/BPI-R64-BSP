@@ -1,9 +1,0 @@
-rtl8367c_asicdrv_misc.c:33:7:rtl8367c_setAsicMacAddress	24	static
-rtl8367c_asicdrv_misc.c:74:7:rtl8367c_getAsicMacAddress	24	static
-rtl8367c_asicdrv_misc.c:114:7:rtl8367c_getAsicDebugInfo	0	static
-rtl8367c_asicdrv_misc.c:135:7:rtl8367c_setAsicPortJamMode	0	static
-rtl8367c_asicdrv_misc.c:153:7:rtl8367c_getAsicPortJamMode	0	static
-rtl8367c_asicdrv_misc.c:173:7:rtl8367c_setAsicMaxLengthCfg	0	static
-rtl8367c_asicdrv_misc.c:193:7:rtl8367c_getAsicMaxLengthCfg	0	static
-rtl8367c_asicdrv_misc.c:214:7:rtl8367c_setAsicMaxLength	0	static
-rtl8367c_asicdrv_misc.c:250:7:rtl8367c_getAsicMaxLength	0	static

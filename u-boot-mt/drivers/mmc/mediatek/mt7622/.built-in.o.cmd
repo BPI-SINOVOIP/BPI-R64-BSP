@@ -1,1 +1,0 @@
-cmd_drivers/mmc/mediatek/mt7622/built-in.o :=  arm-linux-gnueabihf-ld.bfd    -r -o drivers/mmc/mediatek/mt7622/built-in.o drivers/mmc/mediatek/mt7622/msdc.o drivers/mmc/mediatek/mt7622/mmc_core.o drivers/mmc/mediatek/mt7622/cust_msdc.o drivers/mmc/mediatek/mt7622/msdc_utils.o drivers/mmc/mediatek/mt7622/mtk_mmc.o 

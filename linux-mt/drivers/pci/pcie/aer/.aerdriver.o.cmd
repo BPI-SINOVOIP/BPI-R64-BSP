@@ -1,1 +1,0 @@
-cmd_drivers/pci/pcie/aer/aerdriver.o := aarch64-linux-gnu-ld -EL    -r -o drivers/pci/pcie/aer/aerdriver.o drivers/pci/pcie/aer/aerdrv_errprint.o drivers/pci/pcie/aer/aerdrv_core.o drivers/pci/pcie/aer/aerdrv.o 

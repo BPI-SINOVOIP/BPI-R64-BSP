@@ -1,7 +1,0 @@
-mt7622-fpga.o: arch/arm64/boot/dts/mediatek/mt7622-fpga.dts \
- arch/arm64/boot/dts/mediatek/mt7622-fpga.dtsi \
- arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/irq.h \
- arch/arm64/boot/dts/include/dt-bindings/interrupt-controller/arm-gic.h \
- arch/arm64/boot/dts/include/dt-bindings/reset-controller/mt7622-resets.h \
- arch/arm64/boot/dts/mediatek/mt7622-pinfunc.h \
- arch/arm64/boot/dts/include/dt-bindings/pinctrl/mt65xx.h

@@ -1,4 +1,0 @@
-cmd_mmc.c:161:12:do_mmcops	48	static
-cmd_mmc.c:15:5:do_mmc	24	static
-cmd_mmc.c:106:12:do_mmcinfo	24	static
-cmd_mmc.c:158:6:dump_one_block	0	static

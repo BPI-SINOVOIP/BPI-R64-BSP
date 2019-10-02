@@ -1,1 +1,0 @@
-cmd_net/bridge/netfilter/nft_meta_bridge.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o net/bridge/netfilter/nft_meta_bridge.ko net/bridge/netfilter/nft_meta_bridge.o net/bridge/netfilter/nft_meta_bridge.mod.o

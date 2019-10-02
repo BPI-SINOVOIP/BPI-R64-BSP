@@ -1,3 +1,0 @@
-kernel/drivers/vhost/vhost_net.ko
-kernel/drivers/vhost/vringh.ko
-kernel/drivers/vhost/vhost.ko

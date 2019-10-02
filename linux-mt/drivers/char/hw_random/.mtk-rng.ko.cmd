@@ -1,1 +1,0 @@
-cmd_drivers/char/hw_random/mtk-rng.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o drivers/char/hw_random/mtk-rng.ko drivers/char/hw_random/mtk-rng.o drivers/char/hw_random/mtk-rng.mod.o

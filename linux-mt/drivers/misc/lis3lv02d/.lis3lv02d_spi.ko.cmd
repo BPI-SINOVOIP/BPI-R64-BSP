@@ -1,1 +1,0 @@
-cmd_drivers/misc/lis3lv02d/lis3lv02d_spi.ko := aarch64-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o drivers/misc/lis3lv02d/lis3lv02d_spi.ko drivers/misc/lis3lv02d/lis3lv02d_spi.o drivers/misc/lis3lv02d/lis3lv02d_spi.mod.o

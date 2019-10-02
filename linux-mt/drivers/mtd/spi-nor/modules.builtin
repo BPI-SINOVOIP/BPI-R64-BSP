@@ -1,2 +1,0 @@
-kernel/drivers/mtd/spi-nor/spi-nor.ko
-kernel/drivers/mtd/spi-nor/mtk-quadspi.ko

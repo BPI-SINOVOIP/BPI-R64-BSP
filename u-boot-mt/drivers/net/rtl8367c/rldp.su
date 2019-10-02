@@ -1,8 +1,0 @@
-rldp.c:69:15:rtk_rldp_config_set	32	static
-rldp.c:150:15:rtk_rldp_config_get	24	static
-rldp.c:201:15:rtk_rldp_portConfig_set	24	static
-rldp.c:254:15:rtk_rldp_portConfig_get	32	static
-rldp.c:301:15:rtk_rldp_status_get	24	static
-rldp.c:333:15:rtk_rldp_portStatus_get	32	static
-rldp.c:409:15:rtk_rldp_portStatus_set	16	static
-rldp.c:447:15:rtk_rldp_portLoopPair_get	24	static

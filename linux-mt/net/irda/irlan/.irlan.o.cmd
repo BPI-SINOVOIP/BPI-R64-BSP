@@ -1,1 +1,0 @@
-cmd_net/irda/irlan/irlan.o := aarch64-linux-gnu-ld -EL    -r -o net/irda/irlan/irlan.o net/irda/irlan/irlan_common.o net/irda/irlan/irlan_eth.o net/irda/irlan/irlan_event.o net/irda/irlan/irlan_client.o net/irda/irlan/irlan_provider.o net/irda/irlan/irlan_filter.o net/irda/irlan/irlan_provider_event.o net/irda/irlan/irlan_client_event.o 

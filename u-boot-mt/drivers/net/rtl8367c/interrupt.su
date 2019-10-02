@@ -1,7 +1,0 @@
-interrupt.c:42:15:rtk_int_polarity_set	8	static
-interrupt.c:73:15:rtk_int_polarity_get	8	static
-interrupt.c:119:15:rtk_int_control_set	24	static
-interrupt.c:179:15:rtk_int_control_get	24	static
-interrupt.c:230:15:rtk_int_status_set	8	static
-interrupt.c:281:15:rtk_int_status_get	16	static
-interrupt.c:341:15:rtk_int_advanceInfo_get	56	static
